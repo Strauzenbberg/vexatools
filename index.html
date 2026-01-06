@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VEXA TOOLS | High-Performance Digital Ecosystem</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0a0a0c;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --accent-color: #007AFF;
+            --neon-gradient: linear-gradient(135deg, #007AFF 0%, #00fbff 100%);
+            --text-main: #ffffff;
+            --text-secondary: #a1a1a6;
+            --glass-blur: blur(12px);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: -10%; left: -10%;
+            width: 40%; height: 40%;
+            background: radial-gradient(circle, rgba(0, 122, 255, 0.15) 0%, transparent 70%);
+            z-index: -1;
+        }
+
+        /* LANGUAGE SELECTOR */
+        .lang-selector {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        #langSelect {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            backdrop-filter: var(--glass-blur);
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        #langSelect option { background: #121214; }
+
+        /* HEADER */
+        header { padding: 100px 20px 40px; text-align: center; max-width: 800px; }
+        .logo { font-weight: 800; font-size: 3rem; letter-spacing: -2px; background: var(--neon-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 15px; text-transform: uppercase; }
+        .highlight-blue { color: var(--accent-color); font-weight: 600; font-size: 1rem; display: block; margin-bottom: 10px; letter-spacing: 2px; text-transform: uppercase; }
+        .tagline { color: var(--text-secondary); font-size: 1.1rem; font-weight: 300; line-height: 1.6; }
+
+        /* HUB GRID */
+        .hub-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; width: 90%; max-width: 1200px; padding: 40px 0; }
+        .tool-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 24px; padding: 40px; text-decoration: none; transition: all 0.4s ease; backdrop-filter: var(--glass-blur); display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+        .tool-card::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(255,255,255,0.06), transparent 40%); z-index: 3; pointer-events: none; }
+        .tool-card:hover { transform: translateY(-5px); border-color: rgba(0, 122, 255, 0.4); }
+        .tool-icon { font-size: 2.5rem; margin-bottom: 25px; display: block; }
+        .tool-name { color: var(--text-main); font-size: 1.8rem; font-weight: 800; margin-bottom: 12px; letter-spacing: 1px; }
+        .tool-desc { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; font-weight: 300; }
+        .btn-enter { margin-top: 30px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent-color); display: flex; align-items: center; gap: 10px; }
+
+        /* MODAL */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: #121214; border: 1px solid var(--border-color); padding: 40px; border-radius: 32px; width: 90%; max-width: 450px; text-align: center; }
+        .donation-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 25px 0; }
+        .opt-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: white; padding: 12px; border-radius: 12px; cursor: pointer; }
+        .opt-btn.active { border-color: var(--accent-color); background: rgba(0, 122, 255, 0.1); }
+        .custom-val { width: 100%; background: var(--card-bg); border: 1px solid var(--border-color); padding: 12px; border-radius: 12px; color: white; text-align: center; margin-bottom: 20px; }
+        .btn-pay { width: 100%; background: var(--accent-color); color: white; border: none; padding: 18px; border-radius: 16px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+
+        /* FOOTER */
+        footer { margin-top: auto; padding: 60px 20px; color: var(--text-secondary); font-size: 0.8rem; text-align: center; letter-spacing: 1px; }
+        .footer-brand { color: var(--text-main); font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <div class="lang-selector">
+        <select id="langSelect" onchange="updateLanguage()">
+            <option value="en">🇺🇸 English</option>
+            <option value="zh">🇨🇳 Chinese</option>
+            <option value="de">🇩🇪 German</option>
+            <option value="ja">🇯🇵 Japanese</option>
+            <option value="fr">🇫🇷 French</option>
+            <option value="es">🇪🇸 Spanish</option>
+            <option value="ko">🇰🇷 Korean</option>
+            <option value="it">🇮🇹 Italian</option>
+            <option value="ru">🇷🇺 Russian</option>
+            <option value="pt">🇧🇷 Portuguese</option>
+        </select>
+    </div>
+
+    <header>
+        <div class="logo">Vexa Tools</div>
+        <span class="highlight-blue" id="subheadline">Local Processing • Total Privacy</span>
+        <p class="tagline" id="mainTagline">Your files never leave your computer. High-performance integrated ecosystem for batch file manipulation.</p>
+    </header>
+
+    <main class="hub-container">
+        <a href="https://strauzenbberg.github.io/vexatools/pdf" class="tool-card">
+            <div>
+                <span class="tool-icon">📑</span>
+                <h2 class="tool-name">PDF</h2>
+                <p class="tool-desc" data-key="desc-pdf">Optimization, merging, and manipulation of PDF files in seconds.</p>
+            </div>
+            <div class="btn-enter"><span data-key="access">Access App</span> <span>→</span></div>
+        </a>
+        <a href="https://strauzenbberg.github.io/vexatools/docx" class="tool-card">
+            <div>
+                <span class="tool-icon">📄</span>
+                <h2 class="tool-name">DOCX</h2>
+                <p class="tool-desc" data-key="desc-docx">Intelligent conversion and Word document editing with surgical precision.</p>
+            </div>
+            <div class="btn-enter"><span data-key="access">Access App</span> <span>→</span></div>
+        </a>
+        <a href="https://strauzenbberg.github.io/vexatools/jpg" class="tool-card">
+            <div>
+                <span class="tool-icon">🖼️</span>
+                <h2 class="tool-name">JPG</h2>
+                <p class="tool-desc" data-key="desc-jpg">Advanced JPG processing with lossless compression algorithms.</p>
+            </div>
+            <div class="btn-enter"><span data-key="access">Access App</span> <span>→</span></div>
+        </a>
+        <a href="https://strauzenbberg.github.io/vexatools/webm" class="tool-card">
+            <div>
+                <span class="tool-icon">🎬</span>
+                <h2 class="tool-name">WEBM</h2>
+                <p class="tool-desc" data-key="desc-webm">Video conversion to WebM format optimized for the modern web.</p>
+            </div>
+            <div class="btn-enter"><span data-key="access">Access App</span> <span>→</span></div>
+        </a>
+        <a href="https://strauzenbberg.github.io/vexatools/webp" class="tool-card">
+            <div>
+                <span class="tool-icon">🌐</span>
+                <h2 class="tool-name">WEBP</h2>
+                <p class="tool-desc" data-key="desc-webp">Convert images to WebP for maximum loading performance.</p>
+            </div>
+            <div class="btn-enter"><span data-key="access">Access App</span> <span>→</span></div>
+        </a>
+    </main>
+
+    <div style="margin: 40px 0; width: 90%; max-width: 300px;">
+        <button class="btn-pay" id="mainActionBtn" onclick="handleDonationAction()">Support the Project</button>
+    </div>
+
+    <div class="modal-overlay" id="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle">Support Vexa Tools</h3>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 10px;" id="modalDesc">Help us keep it ad-free and private.</p>
+            <div class="donation-options">
+                <button class="opt-btn" onclick="setVal(5)">$5</button>
+                <button class="opt-btn" onclick="setVal(10)">$10</button>
+                <button class="opt-btn" onclick="setVal(25)">$25</button>
+            </div>
+            <input type="number" class="custom-val" placeholder="Custom Value" id="customVal">
+            <button class="btn-pay" onclick="processPay()">Donate via PayPal</button>
+            <button onclick="closeModal()" style="background:none; border:none; color:var(--text-secondary); margin-top:20px; cursor:pointer;">Close</button>
+        </div>
+    </div>
+
+    <footer>
+        Vexa Tools is powered by <span class="footer-brand">Strauz Tech</span> &copy; 2025
+    </footer>
+
+    <script data-goatcounter="https://vexatools.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+    <script>
+        const pixKey = "153d672d-9acb-4fc9-90b9-42ad3a097709";
+        
+        const translations = {
+            en: { sub: "Local Processing • Total Privacy", tagline: "Your files never leave your computer. High-performance integrated ecosystem for batch file manipulation.", access: "Access App", support: "Support the Project", pix: "Copy PIX Key", copied: "PIX Key Copied!" },
+            pt: { sub: "Processamento Local • Privacidade Total", tagline: "Seus arquivos nunca saem do seu computador. Ecossistema integrado para manipulação de arquivos em lote.", access: "Acessar App", support: "Copiar Chave PIX", pix: "Copiar Chave PIX", copied: "Chave PIX Copiada!" },
+            zh: { sub: "本地处理 • 完全隐私", tagline: "您的文件永远不会离开您的计算机。用于批量文件操作的高性能集成生态系统。", access: "访问应用", support: "支持项目" },
+            de: { sub: "Lokale Verarbeitung • Volle Privatsphäre", tagline: "Ihre Dateien verlassen niemals Ihren Computer. Hochleistungs-Ökosystem für die Stapelverarbeitung.", access: "App öffnen", support: "Projekt unterstützen" },
+            ja: { sub: "ローカル処理 • 完全なプライバシー", tagline: "ファイルがコンピュータから離れることはありません。バッチ処理用の高性能統合エコシステム。", access: "アプリにアクセス", support: "プロジェクトを支援" },
+            fr: { sub: "Traitement local • Confidentialité totale", tagline: "Vos fichiers ne quittent jamais votre ordinateur. Écosystème intégré pour la manipulation de fichiers.", access: "Accéder à l'app", support: "Soutenir le projet" },
+            es: { sub: "Procesamiento local • Privacidad total", tagline: "Sus archivos nunca salen de su computadora. Ecosistema integrado para manipulación de archivos.", access: "Acceder a la aplicación", support: "Apoyar el proyecto" },
+            ko: { sub: "로컬 처리 • 완전한 개인 정보 보호", tagline: "파일이 컴퓨터를 떠나지 않습니다. 일괄 파일 조작을 위한 고성능 통합 에코시스템.", access: "앱 접속", support: "프로젝트 지원" },
+            it: { sub: "Elaborazione locale • Privacy totale", tagline: "I tuoi file non lasciano mai il tuo computer. Ecosistema integrato per la manipolazione di file.", access: "Accedi all'app", support: "Sostieni il progetto" },
+            ru: { sub: "Локальная обработка • Полная конфиденциальность", tagline: "Ваши файлы никогда не покидают ваш компьютер. Экосистема для пакетной обработки файлов.", access: "Открыть приложение", support: "Поддержать проект" }
+        };
+
+        function updateLanguage() {
+            const lang = document.getElementById('langSelect').value;
+            const t = translations[lang] || translations.en;
+            
+            document.getElementById('subheadline').innerText = t.sub;
+            document.getElementById('mainTagline').innerText = t.tagline;
+            document.getElementById('mainActionBtn').innerText = t.support;
+            document.querySelectorAll('[data-key="access"]').forEach(el => el.innerText = t.access);
+        }
+
+        function handleDonationAction() {
+            const lang = document.getElementById('langSelect').value;
+            if (lang === 'pt') {
+                navigator.clipboard.writeText(pixKey).then(() => {
+                    const btn = document.getElementById('mainActionBtn');
+                    btn.innerText = translations.pt.copied;
+                    setTimeout(() => { btn.innerText = translations.pt.support; }, 3000);
+                });
+            } else {
+                document.getElementById('modal').style.display = 'flex';
+            }
+        }
+
+        function openModal() { document.getElementById('modal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('modal').style.display = 'none'; }
+        function setVal(v) { document.getElementById('customVal').value = v; }
+        function processPay() {
+            const val = document.getElementById('customVal').value || 10;
+            window.open(`https://www.paypal.com/donate?business=strauzenbberg@outlook.com&amount=${val}`, '_blank');
+        }
+
+        document.querySelectorAll('.tool-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+                card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+            });
+        });
+    </script>
+</body>
+</html>
