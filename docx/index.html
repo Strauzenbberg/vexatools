@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>VEXA ENTERPRISE — PDF to DOCX</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+<script src="https://unpkg.com/docx@8.2.2/build/index.umd.js"></script>
+
+<script src="https://unpkg.com/tesseract.js@5.0.4/dist/tesseract.min.js"></script>
+
+<style>
+body{
+    background:#050505;
+    color:#fff;
+    font-family:system-ui;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:50px;
+}
+
+button{
+    padding:16px 22px;
+    border:none;
+    border-radius:14px;
+    font-weight:700;
+    cursor:pointer;
+    margin-top:10px;
+}
+
+#log{
+    margin-top:20px;
+    width:420px;
+    height:180px;
+    background:#000;
+    color:#00ff9c;
+    font-family:monospace;
+    font-size:12px;
+    padding:14px;
+    overflow:auto;
+}
+
+input{display:none}
+
+/* PIX */
+.pix-box{
+    margin-top:60px;
+    max-width:520px;
+    text-align:center;
+    border-top:1px solid #1f1f1f;
+    padding-top:30px;
+}
+
+.pix-box p{
+    color:#b5b5b5;
+    font-size:14px;
+    line-height:1.6;
+}
+
+.pix-btn{
+    background:#111;
+    color:#fff;
+    padding:14px 22px;
+    border-radius:12px;
+    border:1px solid #2a2a2a;
+    margin-top:16px;
+}
+
+.pix-status{
+    margin-top:10px;
+    color:#00ff9c;
+    font-size:13px;
+    display:none;
+}
+</style>
+</head>
+
+<body>
+
+<h1>VEXA ENTERPRISE</h1>
+
+<button onclick="file.click()">Selecionar PDF</button>
+<input type="file" id="file" accept=".pdf">
+
+<button id="run">Converter Agora</button>
+
+<div id="log">> Sistema pronto</div>
+
+<div class="pix-box">
+
+<h3>Apoie o VEXA ❤️</h3>
+
+<p>
+Este projeto é mantido de forma independente.<br>
+Se o <strong>VEXA</strong> economizou seu tempo, considere apoiar com uma doação via Pix.<br>
+Isso mantém a ferramenta <strong>gratuita para todos</strong>.
+</p>
+
+<button class="pix-btn" onclick="copiarPix()">Apoiar o VEXA ❤️</button>
+
+<input id="pixKey" type="text"
+value="153d672d-9acb-4fc9-90b9-42ad3a097709"
+style="position:absolute;left:-9999px;">
+
+<div id="pixStatus" class="pix-status">✅ Chave Pix copiada</div>
+
+</div>
+
+<script>
+/* 🔧 WORKER FIX */
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+"https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+const log = m => {
+    const el = document.getElementById("log");
+    el.innerHTML += `<div>> ${m}</div>`;
+    el.scrollTop = el.scrollHeight;
+};
+
+document.getElementById("run").onclick = async () => {
+    const input = document.getElementById("file");
+    if (!input.files[0]) return alert("Selecione um PDF");
+
+    try {
+        log("Carregando PDF...");
+        const buffer = await input.files[0].arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
+        log(`PDF com ${pdf.numPages} páginas`);
+
+        const { Document, Packer, Paragraph, TextRun } = window.docx;
+        const paragraphs = [];
+
+        for (let i = 1; i <= pdf.numPages; i++) {
+            log(`Página ${i}`);
+            const page = await pdf.getPage(i);
+            const text = await page.getTextContent();
+
+            if (text.items.length > 15) {
+                let bufferLine = "";
+                let lastY = null;
+
+                text.items.forEach(it => {
+                    if (lastY && Math.abs(it.transform[5] - lastY) > 12) {
+                        paragraphs.push(new Paragraph({
+                            children:[new TextRun({ text: bufferLine, size:22 })],
+                            spacing:{ after:200 }
+                        }));
+                        bufferLine = "";
+                    }
+                    bufferLine += it.str + " ";
+                    lastY = it.transform[5];
+                });
+
+                if (bufferLine.trim()) {
+                    paragraphs.push(new Paragraph({
+                        children:[new TextRun({ text: bufferLine, size:22 })]
+                    }));
+                }
+            } else {
+                log("OCR ativado");
+                const viewport = page.getViewport({ scale: 2 });
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d");
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+
+                await page.render({ canvasContext: ctx, viewport }).promise;
+                const ocr = await Tesseract.recognize(canvas, "por");
+
+                ocr.data.paragraphs.forEach(p => {
+                    paragraphs.push(new Paragraph({
+                        children:[new TextRun({ text: p.text, size:22 })],
+                        spacing:{ after:200 }
+                    }));
+                });
+            }
+        }
+
+        if (!paragraphs.length) throw new Error("Nenhum texto extraído");
+
+        log("Gerando DOCX...");
+        const doc = new Document({ sections:[{ children: paragraphs }] });
+        const blob = await Packer.toBlob(doc);
+
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = input.files[0].name.replace(".pdf",".docx");
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        log("Download iniciado com sucesso");
+
+    } catch (err) {
+        console.error(err);
+        log("ERRO: " + err.message);
+    }
+};
+
+function copiarPix(){
+    const pixKey = "153d672d-9acb-4fc9-90b9-42ad3a097709";
+    navigator.clipboard.writeText(pixKey).then(() => {
+        const status = document.getElementById("pixStatus");
+        status.style.display = "block";
+        setTimeout(() => status.style.display = "none", 3000);
+    });
+}
+</script>
+
+</body>
+</html>
