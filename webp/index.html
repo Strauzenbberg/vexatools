@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VEXA // Image Converter</title>
+    <style>
+        /* Estética VEXA Baseada na Imagem */
+        :root { 
+            --primary: #007AFF; 
+            --bg: #0a0a0b; 
+            --card: #121214; 
+            --border: #1c1c1e;
+            --text: #ffffff; 
+            --text-dim: #8e8e93;
+            --whatsapp: #25d366;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            background: var(--bg); 
+            color: var(--text); 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        /* Cabeçalho */
+        header { text-align: center; margin-bottom: 40px; }
+        h1 { font-size: 48px; font-weight: 700; letter-spacing: -2px; margin-bottom: 10px; }
+        .sub-header { color: var(--text-dim); font-size: 16px; line-height: 1.4; max-width: 300px; margin: 0 auto; }
+
+        /* Container de Uploads */
+        .upload-section { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 16px; margin-bottom: 40px; }
+
+        .drop-zone {
+            background: var(--card);
+            border: 1px dashed #2c2c2e;
+            border-radius: 20px;
+            padding: 35px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .drop-zone:active { transform: scale(0.98); }
+        .drop-zone.active { border-color: var(--primary); background: rgba(0, 122, 255, 0.05); }
+
+        .drop-zone h3 { font-size: 16px; font-weight: 600; margin-bottom: 4px; text-transform: uppercase; }
+        .drop-zone p { font-size: 13px; color: var(--text-dim); }
+
+        /* Card de Apoio */
+        .support-card {
+            width: 100%;
+            max-width: 400px;
+            background: var(--card);
+            border-radius: 28px;
+            padding: 40px 30px;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .support-card h2 { font-size: 24px; margin-bottom: 15px; }
+        .support-card p { font-size: 14px; color: var(--text-dim); margin-bottom: 25px; line-height: 1.5; }
+
+        /* Botões Estilizados */
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 16px;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 15px;
+            border: none;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            margin-bottom: 12px;
+        }
+
+        .btn-pix { background: var(--primary); color: white; }
+        .btn-share { 
+            background: var(--whatsapp); 
+            color: white; 
+            position: fixed; 
+            bottom: 20px; 
+            right: 20px; 
+            width: auto; 
+            padding: 12px 24px; 
+            border-radius: 100px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        #log {
+            width: 100%;
+            max-width: 400px;
+            font-family: monospace;
+            font-size: 11px;
+            color: #00ff00;
+            background: #000;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 20px;
+            height: 100px;
+            overflow-y: auto;
+            border: 1px solid #1c1c1e;
+        }
+
+        input[type="file"], canvas { display: none; }
+
+        /* Estilo do Botão Principal de Conversão (adicionado para funcionalidade) */
+        #btn-run {
+            background: #fff;
+            color: #000;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>VEXA</h1>
+    <p class="sub-header">Conversão de imagem instantânea. Processamento local, privacidade total.</p>
+</header>
+
+<div class="upload-section">
+    <div class="drop-zone" id="drop-zone">
+        <h3>1. IMAGENS (.JPG, .PNG)</h3>
+        <p>Arraste fotos ou clique para selecionar</p>
+    </div>
+    
+    <input type="file" id="f-img" multiple accept="image/png, image/jpeg, image/jpg">
+    
+    <button id="btn-run" class="btn">CONVERTER PARA WEBP</button>
+
+    <div id="log">> Sistema pronto...</div>
+</div>
+
+<div class="support-card">
+    <h2>Apoie o Projeto</h2>
+    <p>Economizou seu tempo e recursos? Contribua para mantermos esta ferramenta gratuita e sem anúncios.</p>
+    
+    <button class="btn btn-pix" onclick="copyPix()">
+        <span style="font-size: 18px;">📋</span> Copiar chave PIX
+    </button>
+</div>
+
+<button class="btn btn-share" onclick="shareVexa()">
+    <span>💬</span> Compartilhar
+</button>
+
+<canvas id="canvas"></canvas>
+
+<script>
+    const logDiv = document.getElementById('log');
+    const btn = document.getElementById('btn-run');
+    const fileInput = document.getElementById('f-img');
+    const dropZone = document.getElementById('drop-zone');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    const pixKey = "153d672d-9acb-4fc9-90b9-42ad3a097709";
+
+    const writeLog = (msg) => { 
+        logDiv.innerHTML += `<div>> ${msg}</div>`; 
+        logDiv.scrollTop = logDiv.scrollHeight; 
+    };
+
+    // Interface Drag & Drop
+    dropZone.onclick = () => fileInput.click();
+    dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('active'); };
+    dropZone.ondragleave = () => dropZone.classList.remove('active');
+    dropZone.ondrop = (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('active');
+        fileInput.files = e.dataTransfer.files;
+        writeLog(`${fileInput.files.length} ARQUIVOS PRONTOS`);
+    };
+
+    fileInput.onchange = () => {
+        if(fileInput.files.length > 0) writeLog(`${fileInput.files.length} SELECIONADOS`);
+    };
+
+    function copyPix() {
+        navigator.clipboard.writeText(pixKey);
+        alert("Chave PIX copiada!");
+        writeLog("CHAVE PIX COPIADA");
+    }
+
+    function shareVexa() {
+        const text = "Confira o VEXA IMG, conversor de imagens ultra rápido!";
+        const url = window.location.href;
+        window.open(`https://wa.me/?text=${encodeURIComponent(text + " " + url)}`, '_blank');
+    }
+
+    // Lógica de Conversão (Mantida intacta conforme solicitado)
+    btn.onclick = async () => {
+        const files = fileInput.files;
+        if (files.length === 0) return alert("Selecione as imagens!");
+
+        btn.disabled = true;
+        btn.innerText = "PROCESSANDO...";
+        writeLog(`INICIANDO CONVERSÃO...`);
+
+        for (let file of files) {
+            try {
+                const nameWithoutExt = file.name.substring(0, file.name.lastIndexOf('.'));
+                const img = new Image();
+                img.src = URL.createObjectURL(file);
+
+                await new Promise((resolve) => {
+                    img.onload = () => {
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        ctx.drawImage(img, 0, 0);
+
+                        canvas.toBlob((blob) => {
+                            const a = document.createElement('a');
+                            a.href = URL.createObjectURL(blob);
+                            a.download = `${nameWithoutExt}.webp`;
+                            a.click();
+                            URL.revokeObjectURL(img.src);
+                            writeLog(`CONCLUÍDO: ${nameWithoutExt}.webp`);
+                            resolve();
+                        }, 'image/webp', 0.9);
+                    };
+                });
+            } catch (err) {
+                writeLog(`ERRO: ${file.name}`);
+            }
+        }
+
+        writeLog("OPERAÇÃO FINALIZADA");
+        btn.disabled = false;
+        btn.innerText = "CONVERTER PARA WEBP";
+    };
+</script>
+</body>
+</html>
