@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VEXA // Image Converter Elite</title>
+    <style>
+        /* VEXA PREMIUM DESIGN SYSTEM */
+        :root { 
+            --primary: #007AFF; 
+            --bg: #0a0a0b; 
+            --card: #121214; 
+            --border: #1c1c1e;
+            --text: #ffffff; 
+            --text-dim: #8e8e93;
+            --whatsapp: #25d366;
+            --success: #32d74b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            background: var(--bg); 
+            color: var(--text); 
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+            overflow-x: hidden;
+        }
+
+        /* Cabeçalho Atualizado */
+        header { text-align: center; margin-bottom: 50px; animation: fadeIn 0.8s ease-out; }
+        h1 { font-size: 56px; font-weight: 800; letter-spacing: -3px; margin-bottom: 12px; }
+        .sub-header-privacy { color: var(--primary); font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+        .sub-header-desc { color: var(--text-dim); font-size: 15px; line-height: 1.5; max-width: 300px; margin: 0 auto; }
+
+        /* Container Principal */
+        .upload-section { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 18px; margin-bottom: 40px; }
+
+        .drop-zone {
+            background: var(--card);
+            border: 1px dashed var(--border);
+            border-radius: 24px;
+            padding: 45px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .drop-zone:hover { border-color: var(--text-dim); background: #161618; }
+        .drop-zone:active { transform: scale(0.97); }
+        .drop-zone.active { border-color: var(--primary); background: rgba(0, 122, 255, 0.08); }
+
+        .drop-zone h3 { font-size: 14px; font-weight: 700; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
+        .drop-zone p { font-size: 12px; color: var(--text-dim); }
+
+        /* Card de Apoio */
+        .support-card {
+            width: 100%;
+            max-width: 400px;
+            background: var(--card);
+            border-radius: 32px;
+            padding: 40px 30px;
+            text-align: center;
+            margin-top: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .support-card h2 { font-size: 26px; font-weight: 700; margin-bottom: 15px; letter-spacing: -1px; }
+        .support-card p { font-size: 14px; color: var(--text-dim); margin-bottom: 28px; line-height: 1.6; }
+
+        /* Botões */
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            padding: 20px;
+            border-radius: 18px;
+            font-weight: 700;
+            font-size: 15px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-main { background: #ffffff; color: #000; margin-top: 5px; text-transform: uppercase; }
+        .btn-main:hover { filter: brightness(0.9); transform: translateY(-1px); }
+        .btn-main:disabled { background: #2c2c2e; color: #555; cursor: not-allowed; transform: none; }
+
+        .btn-pix { background: var(--primary); color: white; box-shadow: 0 12px 24px rgba(0, 122, 255, 0.25); }
+        
+        .btn-share { 
+            background: var(--whatsapp); 
+            color: white; 
+            position: fixed; 
+            bottom: 30px; 
+            right: 20px; 
+            width: auto; 
+            padding: 16px 24px; 
+            border-radius: 100px;
+            box-shadow: 0 12px 30px rgba(37, 211, 102, 0.3);
+            z-index: 100;
+        }
+
+        #log {
+            width: 100%;
+            max-width: 400px;
+            font-family: 'SFMono-Regular', Consolas, monospace;
+            font-size: 11px;
+            color: var(--success);
+            background: #000;
+            padding: 18px;
+            border-radius: 20px;
+            margin-top: 20px;
+            height: 130px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            text-align: left;
+            scrollbar-width: none;
+        }
+        #log::-webkit-scrollbar { display: none; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        input[type="file"], canvas { display: none; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>VEXA</h1>
+    <p class="sub-header-privacy">Processamento local, privacidade total.</p>
+    <p class="sub-header-desc">Conversão de imagem instantânea em lote.</p>
+</header>
+
+<div class="upload-section">
+    <div class="drop-zone" id="drop-zone">
+        <h3>1. IMAGENS (.WEBP, .PNG)</h3>
+        <p>Arraste fotos ou clique para selecionar</p>
+    </div>
+    
+    <input type="file" id="f-img" multiple accept="image/webp, image/png, image/jpeg, image/jpg">
+    
+    <button id="btn-run" class="btn btn-main">CONVERTER PARA .JPG</button>
+
+    <div id="log">> Sistema VEXA inicializado...</div>
+</div>
+
+<div class="support-card">
+    <h2>Apoie o Projeto</h2>
+    <p>Economizou seu tempo e recursos? Contribua para mantermos esta ferramenta gratuita e sem anúncios.</p>
+    
+    <button class="btn btn-pix" onclick="copyPix()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        Copiar chave PIX
+    </button>
+</div>
+
+<button class="btn btn-share" onclick="shareVexa()">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    Compartilhar
+</button>
+
+<canvas id="canvas"></canvas>
+
+<script>
+    /**
+     * VEXA IMAGE CONVERTER LOGIC
+     */
+    const logDiv = document.getElementById('log');
+    const btn = document.getElementById('btn-run');
+    const fileInput = document.getElementById('f-img');
+    const dropZone = document.getElementById('drop-zone');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    const pixKey = "153d672d-9acb-4fc9-90b9-42ad3a097709";
+
+    const writeLog = (msg) => { 
+        const time = new Date().toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        logDiv.innerHTML += `<div><span style="opacity: 0.5">[${time}]</span> > ${msg}</div>`; 
+        logDiv.scrollTop = logDiv.scrollHeight; 
+    };
+
+    dropZone.onclick = () => fileInput.click();
+    dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('active'); };
+    dropZone.ondragleave = () => dropZone.classList.remove('active');
+    dropZone.ondrop = (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('active');
+        if (e.dataTransfer.files.length > 0) {
+            fileInput.files = e.dataTransfer.files;
+            handleFilesSelected();
+        }
+    };
+
+    fileInput.onchange = () => handleFilesSelected();
+
+    function handleFilesSelected() {
+        if(fileInput.files.length > 0) {
+            writeLog(`${fileInput.files.length} IMAGEM(NS) AGUARDANDO CONVERSÃO`);
+        }
+    }
+
+    async function copyPix() {
+        try {
+            await navigator.clipboard.writeText(pixKey);
+            writeLog("CHAVE PIX COPIADA COM SUCESSO!");
+            const pixBtn = document.querySelector('.btn-pix');
+            const oldContent = pixBtn.innerHTML;
+            pixBtn.innerHTML = "✅ Chave Copiada!";
+            setTimeout(() => pixBtn.innerHTML = oldContent, 2000);
+        } catch (err) {
+            writeLog("ERRO AO COPIAR PIX.");
+        }
+    }
+
+    function shareVexa() {
+        const text = "VEXA: Conversor de imagens privado e ultra rápido!";
+        const url = window.location.href;
+        window.open(`https://wa.me/?text=${encodeURIComponent(text + " " + url)}`, '_blank');
+    }
+
+    btn.onclick = async () => {
+        const files = fileInput.files;
+        if (files.length === 0) {
+            writeLog("AVISO: SELECIONE ARQUIVOS PRIMEIRO.");
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerText = "PROCESSANDO...";
+        writeLog(`INICIANDO CONVERSÃO...`);
+
+        for (let file of files) {
+            try {
+                const nameWithoutExt = file.name.substring(0, file.name.lastIndexOf('.'));
+                const img = new Image();
+                const objectURL = URL.createObjectURL(file);
+                img.src = objectURL;
+
+                await new Promise((resolve, reject) => {
+                    img.onload = () => {
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        ctx.fillStyle = "#FFFFFF";
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        ctx.drawImage(img, 0, 0);
+
+                        canvas.toBlob((blob) => {
+                            const a = document.createElement('a');
+                            a.href = URL.createObjectURL(blob);
+                            a.download = `${nameWithoutExt}.jpg`;
+                            a.click();
+                            URL.revokeObjectURL(objectURL);
+                            writeLog(`CONCLUÍDO: ${nameWithoutExt}.jpg`);
+                            resolve();
+                        }, 'image/jpeg', 0.92);
+                    };
+                    img.onerror = () => {
+                        writeLog(`ERRO AO CARREGAR: ${file.name}`);
+                        reject();
+                    };
+                });
+            } catch (err) {
+                writeLog(`ERRO NO ARQUIVO: ${file.name}`);
+            }
+        }
+
+        writeLog("✨ TAREFAS FINALIZADAS!");
+        btn.disabled = false;
+        btn.innerText = "CONVERTER PARA .JPG";
+    };
+</script>
+</body>
+</html>
