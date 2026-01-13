@@ -36,7 +36,9 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            /* ALTERAÇÃO CIRÚRGICA PARA MOBILE */
+            overflow-x: hidden;
+            overflow-y: auto; 
         }
 
         .glass-panel {
@@ -139,9 +141,22 @@
         .p-fill { height: 100%; background: var(--accent-primary); width: 0%; transition: width 0.2s; }
         .p-txt { font-size: 0.75rem; color: var(--text-muted); text-align: right; }
 
+        /* RESPONSIVIDADE CORRIGIDA */
         @media (max-width: 1100px) {
-            main { grid-template-columns: 1fr; grid-template-rows: auto 500px auto; overflow-y: auto;}
-            .side-by-side-wrapper { grid-template-columns: 1fr; height: auto; }
+            main { 
+                grid-template-columns: 1fr; 
+                grid-template-rows: auto; 
+                height: auto; 
+                overflow: visible; 
+            }
+            .side-by-side-wrapper { 
+                grid-template-columns: 1fr; 
+                height: auto; 
+                display: none; /* Mantém controlado pelo JS */
+            }
+            .stage-panel {
+                min-height: 500px;
+            }
         }
     </style>
 </head>
@@ -179,7 +194,7 @@
                 <input type="range" id="sharpSlider" min="0" max="100" value="60" step="5">
             </div>
             
-            <p style="font-size: 0.7rem; color: var(--text-muted); text-align: center;">Os ajustes são aplicados automaticamente após a alteração dos sliders.</p>
+            <p style="font-size: 0.7rem; color: var(--text-muted); text-align: center;">Os ajustes são aplicados automaticamente.</p>
         </section>
 
         <section class="stage-panel glass-panel">
@@ -249,13 +264,12 @@
             els.imgOrg.src = url;
             els.imgOrg.onload = () => {
                 els.empty.style.display = 'none';
-                els.wrapper.style.display = 'grid';
+                els.wrapper.style.display = window.innerWidth <= 1100 ? 'flex' : 'grid';
                 els.status.innerText = "Imagem carregada. Processando...";
-                processImage(); // Disparo automático
+                processImage();
             };
         }
 
-        // Listener para os sliders - reprocessa automaticamente ao mudar
         [els.sNoise, els.sColor, els.sSharp].forEach(slider => {
             slider.addEventListener('change', () => {
                 if(state.file) processImage();
@@ -275,7 +289,7 @@
 
             let w = els.imgOrg.naturalWidth;
             let h = els.imgOrg.naturalHeight;
-            const maxDim = 2560;
+            const maxDim = 2048; // Otimizado para Mobile
             if (w > maxDim || h > maxDim) {
                 const ratio = Math.min(maxDim / w, maxDim / h);
                 w = Math.round(w * ratio); h = Math.round(h * ratio);
@@ -285,7 +299,6 @@
             const ctxBase = els.cBase.getContext('2d');
             const ctxLayer = els.cLayer.getContext('2d');
 
-            // 1. Denoise
             await updateProgress(30, "HDR Denoise...");
             ctxBase.drawImage(els.imgOrg, 0, 0, w, h);
             const noise = parseInt(els.sNoise.value);
@@ -301,14 +314,12 @@
                 ctxBase.globalAlpha = 1.0;
             }
 
-            // 2. Vibrance
             await updateProgress(60, "HDR Color Correction...");
             const vib = 100 + parseInt(els.sColor.value);
             ctxBase.filter = `saturate(${vib}%) contrast(105%) brightness(102%)`;
             ctxBase.drawImage(els.cBase, 0, 0);
             ctxBase.filter = 'none';
 
-            // 3. Sharpen
             await updateProgress(90, "Smart Sharpening...");
             state.ctx.drawImage(els.cBase, 0, 0);
             const sharp = parseInt(els.sSharp.value) / 100;
