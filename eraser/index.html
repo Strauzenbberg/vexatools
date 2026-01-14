@@ -3,87 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vexa Eraser | Remover Fundo</title>
+    <title>VexaTools HDR | Eraser</title>
     <style>
-        body { font-family: sans-serif; background: #111; color: white; text-align: center; padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; }
-        .upload-box { 
-            border: 2px dashed #00ff88; padding: 40px; margin-bottom: 20px; 
-            border-radius: 10px; cursor: pointer; background: #1a1a1a; transition: 0.3s;
+        body { font-family: 'Segoe UI', sans-serif; background: #050505; color: white; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+        
+        h2 { color: #00ff88; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; }
+        p { color: #666; font-size: 0.9rem; margin-bottom: 30px; }
+
+        .upload-area {
+            border: 2px dashed #333; padding: 40px; border-radius: 12px;
+            background: #111; width: 100%; max-width: 400px; text-align: center;
+            cursor: pointer; transition: 0.3s;
         }
-        .upload-box:hover { background: #222; }
+        .upload-area:hover { border-color: #00ff88; background: #161616; }
         
-        /* Área de resultado */
-        img { max-width: 100%; border-radius: 8px; margin-top: 10px; background: url('https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.publicdomainpictures.net%2Fpictures%2F30000%2Fvelka%2Fcheckerboard-pattern.jpg&f=1&nofb=1') repeat; }
+        /* Resultados */
+        .result-container { margin-top: 20px; width: 100%; max-width: 500px; text-align: center; }
+        img { max-width: 100%; border-radius: 8px; margin-top: 10px; background: url('https://www.publicdomainpictures.net/pictures/30000/velka/checkerboard-pattern.jpg') repeat; display: none; }
         
-        /* Status e Logs */
-        #status { font-weight: bold; margin: 10px 0; color: #ffeb3b; }
-        button { background: #00ff88; color: black; border: none; padding: 12px 25px; font-weight: bold; font-size: 16px; border-radius: 5px; cursor: pointer; display: none; margin-top: 15px; }
+        /* Barra de Progresso */
+        .progress-container { width: 100%; background: #222; height: 6px; border-radius: 3px; margin-top: 15px; display: none; overflow: hidden; }
+        .progress-bar { height: 100%; background: #00ff88; width: 0%; transition: width 0.2s; }
+        
+        #status { margin-top: 15px; font-weight: bold; color: #ffeb3b; font-size: 0.9rem; }
+        #debug-log { font-family: monospace; font-size: 0.7rem; color: #555; margin-top: 10px; width: 100%; max-width: 400px; text-align: left; max-height: 100px; overflow-y: auto; display: none; }
+
+        button {
+            margin-top: 20px; padding: 12px 30px; background: #00ff88; color: #000; border: none; 
+            border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1rem; display: none;
+        }
+        button:hover { transform: scale(1.02); box-shadow: 0 0 15px rgba(0,255,136,0.3); }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2 style="color: #00ff88;">VEXA ERASER</h2>
+    <h2>Vexa Eraser</h2>
+    <p>IA Client-Side • Processamento Local</p>
     
-    <div class="upload-box" onclick="document.getElementById('inp').click()">
-        📁 Clique aqui para escolher a imagem
-        <input type="file" id="inp" accept="image/*" style="display:none">
+    <div class="upload-area" onclick="document.getElementById('fileIn').click()">
+        <span style="font-size: 2rem;">📂</span><br>
+        Clique para carregar imagem
+        <input type="file" id="fileIn" accept="image/*" style="display:none">
     </div>
 
-    <div id="status">Aguardando imagem...</div>
-    
-    <img id="preview" style="display:none">
-    <br>
-    <button id="btnDown" onclick="downloadImg()">⬇️ Baixar PNG Sem Fundo</button>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.0.4/dist/imgly-background-removal.umd.js"></script>
-
-<script>
-    let resultUrl = "";
-
-    document.getElementById('inp').addEventListener('change', function(e) {
-        if(e.target.files.length === 0) return;
+    <div class="result-container">
+        <div id="status"></div>
         
-        const file = e.target.files[0];
-        const status = document.getElementById('status');
-        const preview = document.getElementById('preview');
-        const btn = document.getElementById('btnDown');
+        <div class="progress-container" id="progCont">
+            <div class="progress-bar" id="progBar"></div>
+        </div>
 
-        // Reset visual
-        preview.style.display = 'none';
-        btn.style.display = 'none';
-        status.innerText = "🚀 Iniciando Vexa AI... (Baixando modelos, aguarde...)";
-        status.style.color = "#ffeb3b"; // Amarelo
+        <div id="debug-log"></div>
 
-        // Configuração para forçar o download dos modelos da nuvem pública
-        const config = {
-            publicPath: "https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.0.4/dist/"
-        };
+        <img id="resultImage">
+        <br>
+        <button id="downloadBtn" onclick="downloadFile()">⬇️ Baixar PNG</button>
+    </div>
 
-        imglyRemoveBackground(file, config).then((blob) => {
-            resultUrl = URL.createObjectURL(blob);
-            preview.src = resultUrl;
-            preview.style.display = 'block';
+    <script src="https://unpkg.com/@imgly/background-removal@1.0.4/dist/imgly-background-removal.umd.js"></script>
+
+    <script>
+        let finalImageBlobUrl = "";
+        const debugLog = document.getElementById('debug-log');
+
+        function log(msg, isError = false) {
+            debugLog.style.display = 'block';
+            debugLog.innerHTML += `<div style="color: ${isError ? '#ff4444' : '#888'}">> ${msg}</div>`;
+            debugLog.scrollTop = debugLog.scrollHeight;
+            console.log(msg);
+        }
+
+        document.getElementById('fileIn').addEventListener('change', function(e) {
+            if(e.target.files.length === 0) return;
             
-            status.innerText = "✅ Fundo Removido com Sucesso!";
-            status.style.color = "#00ff88"; // Verde
-            btn.style.display = 'inline-block';
-        }).catch((error) => {
-            console.error(error);
-            status.innerHTML = "❌ Erro: " + error + "<br><small>Tente usar Chrome ou Edge atualizado.</small>";
-            status.style.color = "#ff4444";
-        });
-    });
+            const file = e.target.files[0];
+            const status = document.getElementById('status');
+            const img = document.getElementById('resultImage');
+            const btn = document.getElementById('downloadBtn');
+            const progCont = document.getElementById('progCont');
+            const progBar = document.getElementById('progBar');
 
-    function downloadImg() {
-        const a = document.createElement('a');
-        a.href = resultUrl;
-        a.download = 'vexa-eraser.png';
-        a.click();
-    }
-</script>
+            // Reset
+            img.style.display = 'none';
+            btn.style.display = 'none';
+            debugLog.innerHTML = ""; 
+            status.innerText = "Inicializando IA...";
+            status.style.color = "#ffeb3b";
+            progCont.style.display = 'block';
+            progBar.style.width = '5%';
 
-</body>
-</html>
+            log("Iniciando processo...");
+            log("Arquivo selecionado: " + file.name);
+
+            // CONFIGURAÇÃO CRUCIAL
+            const config = {
+                // Aponta explicitamente para a pasta dist no UNPKG
+                publicPath: "
