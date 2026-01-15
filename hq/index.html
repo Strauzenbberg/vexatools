@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vexa HQPremium | Art Transformation</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+        /* * =========================================
+         * VEXA DESIGN SYSTEM - CORE STYLES
+         * =========================================
+         */
+        :root {
+            --primary: #1a1a1a;
+            --accent: #6C63FF; 
+            --accent-gold: #FFD700;
+            --accent-teal: #00C9A7;
+            --accent-pink: #FF6B6B;
+            --glass-bg: rgba(255, 255, 255, 0.75); /* Mais opaco para legibilidade */
+            --glass-border: rgba(255, 255, 255, 0.9);
+            --shadow-soft: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            --text-main: #2d3436;
+            --text-light: #636e72;
+            --bg-gradient: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            outline: none;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 20px 60px 20px;
+            overflow-x: hidden;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            margin-top: 10px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            letter-spacing: -0.5px;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        /* * =========================================
+         * UI COMPONENTS
+         * =========================================
+         */
+        
+        .app-container {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        /* Upload Zone */
+        .upload-zone {
+            width: 100%;
+            max-width: 800px;
+            height: 200px;
+            border: 2px dashed #cbd5e0;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.4);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            z-index: 5;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.8);
+            transform: translateY(-2px);
+        }
+
+        .upload-input {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .upload-label {
+            font-weight: 500;
+            color: var(--text-light);
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .upload-icon {
+            font-size: 2rem;
+            color: var(--accent);
+        }
+
+        /* Comparison Container */
+        .comparison-container {
+            display: none;
+            width: 100%;
+            gap: 20px;
+            flex-direction: row;
+            align-items: flex-start;
+            animation: fadeInScale 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .comparison-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .image-label {
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-light);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+        }
+
+        .image-wrapper {
+            position: relative;
+            border-radius: 12px;
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+            background: white;
+            line-height: 0;
+            min-height: 100px;
+            background-color: #f0f2f5;
+        }
+
+        .image-wrapper img, 
+        .image-wrapper canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        img[src=""] { display: none; }
+
+        /* Controls Panel */
+        .controls-panel {
+            display: none;
+            width: 100%;
+            max-width: 900px;
+            padding: 30px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: var(--shadow-soft);
+            flex-direction: column;
+            gap: 30px; 
+            animation: slideUp 0.6s ease-out;
+        }
+
+        /* Layout Grid for Sliders */
+        .sliders-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Duas colunas */
+            gap: 40px;
+        }
+
+        .slider-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .section-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--text-light);
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 8px;
+            margin-bottom: 5px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .slider-labels {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-light);
+            display: flex;
+            justify-content: space-between;
+            padding: 0 2px;
+        }
+
+        .slider-title {
+            font-weight: 600;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Ícone de aviso para sliders pesados */
+        .heavy-icon {
+            font-size: 0.7rem;
+            color: var(--accent);
+            cursor: help;
+            border: 1px solid var(--accent);
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .percent-badge {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            background: rgba(108, 99, 255, 0.1);
+            padding: 2px 8px;
+            border-radius: 8px;
+            min-width: 45px;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        /* Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+            margin-top: 5px;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            margin-top: -8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border: 2px solid white;
+            transition: transform 0.1s, background 0.3s;
+        }
+
+        /* Thumb Colors */
+        #brightnessSlider::-webkit-slider-thumb { background: var(--accent-gold); }
+        #contrastSlider::-webkit-slider-thumb { background: var(--accent-teal); }
+        #colorSlider::-webkit-slider-thumb { background: var(--accent-pink); }
+        
+        /* Structural Sliders (Darker) */
+        #posterizationSlider::-webkit-slider-thumb, 
+        #sharpnessSlider::-webkit-slider-thumb { 
+            background: #4a4a4a; 
+        }
+
+        input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 4px; cursor: pointer; background: #e2e8f0; border-radius: 2px;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex; gap: 15px; width: 100%; margin-top: 10px;
+        }
+
+        .btn {
+            padding: 14px 28px; border: none; border-radius: 50px; font-weight: 600; font-size: 0.95rem;
+            cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center;
+            justify-content: center; gap: 8px; flex: 1; 
+        }
+
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: #000; box-shadow: 0 10px 20px rgba(0,0,0,0.15); transform: translateY(-2px); }
+        .btn-secondary { background: transparent; border: 2px solid #e2e8f0; color: var(--text-light); }
+        .btn-secondary:hover { border-color: var(--text-main); color: var(--text-main); background: white; }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255,255,255,0.8); display: none; align-items: center; justify-content: center; z-index: 10;
+        }
+        
+        .spinner {
+            width: 40px; height: 40px; border: 3px solid rgba(108, 99, 255, 0.3);
+            border-radius: 50%; border-top-color: var(--accent); animation: spin 1s ease-in-out infinite;
+        }
+
+        /* Animações */
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInScale { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Mobile */
+        @media (max-width: 800px) {
+            h1 { font-size: 2rem; }
+            .comparison-container { flex-direction: column; }
+            .sliders-layout { grid-template-columns: 1fr; gap: 30px; }
+            .controls-panel { padding: 20px; }
+            .button-group { flex-direction: column-reverse; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Vexa HQPremium</h1>
+        <div class="subtitle">Art Intelligence Studio</div>
+    </header>
+
+    <div class="app-container">
+        <div class="upload-zone" id="uploadZone">
+            <input type="file" id="imageInput" class="upload-input" accept="image/png, image/jpeg, image/jpg">
+            <div class="upload-label">
+                <span class="upload-icon">✦</span>
+                <span>Toque ou arraste sua foto aqui</span>
+                <span style="font-size: 0.75rem; opacity: 0.6;">Suporta JPG e PNG de alta qualidade</span>
+            </div>
+        </div>
+
+        <div class="comparison-container" id="comparisonContainer">
+            <div class="comparison-col">
+                <div class="image-label">Original</div>
+                <div class="image-wrapper">
+                    <img id="originalView" src="" alt="">
+                </div>
+            </div>
+            <div class="comparison-col">
+                 <div class="image-label">Resultado VEXA</div>
+                 <div class="image-wrapper">
+                    <div class="loading-overlay" id="loadingOverlay">
+                        <div class="spinner"></div>
+                    </div>
+                    <canvas id="mainCanvas"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls-panel" id="controlsPanel">
+            
+            <div class="sliders-layout">
+                
+                <div class="slider-section">
+                    <div class="section-title">Estrutura da Arte</div>
+                    
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span class="slider-title">Intensidade</span>
+                            <div class="percent-badge" id="effectPercentDisplay">80%</div>
+                        </div>
+                        <input type="range" id="effectSlider" min="0" max="100" value="80">
+                        <div class="slider-labels"><span>Real</span><span>Glib</span></div>
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span class="slider-title">Pasteurização <span class="heavy-icon" title="Processamento na CPU">⚡</span></span>
+                            <div class="percent-badge" id="posterizationPercentDisplay" style="color: #4a4a4a; bg: #eee;">50%</div>
+                        </div>
+                        <input type="range" id="posterizationSlider" min="0" max="100" value="50">
+                        <div class="slider-labels"><span>Suave</span><span>Chapado</span></div>
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span class="slider-title">Nitidez <span class="heavy-icon" title="Processamento na CPU">⚡</span></span>
+                            <div class="percent-badge" id="sharpnessPercentDisplay" style="color: #4a4a4a; bg: #eee;">50%</div>
+                        </div>
+                        <input type="range" id="sharpnessSlider" min="0" max="100" value="50">
+                        <div class="slider-labels"><span>Soft</span><span>Hard</span></div>
+                    </div>
+                </div>
+
+                <div class="slider-section">
+                    <div class="section-title">Ajustes Finais</div>
+
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span class="slider-title">Cor</span>
+                            <div class="percent-badge" id="colorPercentDisplay" style="color: var(--accent-pink); background: rgba(255, 107, 107, 0.1);">100%</div>
+                        </div>
+                        <input type="range" id="colorSlider" min="0" max="200" value="100">
+                        <div class="slider-labels"><span>P&B</span><span>Vívido</span></div>
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span class="slider-title">Brilho</span>
+                            <div class="percent-badge" id="brightnessPercentDisplay" style="color: var(--accent-gold); background: rgba(255, 215, 0, 0.1);">100%</div>
+                        </div>
+                        <input type="range" id="brightnessSlider" min="0" max="200" value="100">
+                        <div class="slider-labels"><span>Escuro</span><span>Claro</span></div>
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span class="slider-title">Contraste</span>
+                            <div class="percent-badge" id="contrastPercentDisplay" style="color: var(--accent-teal); background: rgba(0, 201, 167, 0.1);">100%</div>
+                        </div>
+                        <input type="range" id="contrastSlider" min="0" max="200" value="100">
+                        <div class="slider-labels"><span>Suave</span><span>Intenso</span></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-secondary" id="resetBtn">Nova Foto</button>
+                <button class="btn btn-primary" id="downloadBtn">
+                    <span>Baixar Arte</span>
+                    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const imageInput = document.getElementById('imageInput');
+        const uploadZone = document.getElementById('uploadZone');
+        const comparisonContainer = document.getElementById('comparisonContainer');
+        const originalView = document.getElementById('originalView');
+        const controlsPanel = document.getElementById('controlsPanel');
+        const canvas = document.getElementById('mainCanvas');
+        const ctx = canvas.getContext('2d');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+
+        // Sliders
+        const effectSlider = document.getElementById('effectSlider');
+        const posterizationSlider = document.getElementById('posterizationSlider');
+        const sharpnessSlider = document.getElementById('sharpnessSlider');
+        const colorSlider = document.getElementById('colorSlider');
+        const brightnessSlider = document.getElementById('brightnessSlider');
+        const contrastSlider = document.getElementById('contrastSlider');
+
+        // Displays
+        const displays = {
+            effect: document.getElementById('effectPercentDisplay'),
+            poster: document.getElementById('posterizationPercentDisplay'),
+            sharp: document.getElementById('sharpnessPercentDisplay'),
+            color: document.getElementById('colorPercentDisplay'),
+            bright: document.getElementById('brightnessPercentDisplay'),
+            contrast: document.getElementById('contrastPercentDisplay')
+        };
+
+        const downloadBtn = document.getElementById('downloadBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        // State
+        let originalImage = new Image();
+        let artisticData = null; 
+
+        // ==========================================
+        // 1. UPLOAD & SETUP
+        // ==========================================
+        imageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            uploadZone.style.opacity = '0.5';
+            reader.onload = (event) => {
+                originalImage.onload = () => {
+                    setupInterface();
+                    // Processa com valores padrão (50% poster/sharpness)
+                    triggerStructuralUpdate();
+                };
+                originalImage.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function setupInterface() {
+            const maxWidth = 1200; 
+            const scale = Math.min(1, maxWidth / originalImage.width);
+            canvas.width = originalImage.width * scale;
+            canvas.height = originalImage.height * scale;
+            originalView.src = originalImage.src;
+
+            uploadZone.style.display = 'none';
+            comparisonContainer.style.display = 'flex'; 
+            controlsPanel.style.display = 'flex';
+            
+            resetControls();
+        }
+
+        function resetControls() {
+            setSlider(effectSlider, 80, displays.effect);
+            setSlider(posterizationSlider, 50, displays.poster);
+            setSlider(sharpnessSlider, 50, displays.sharp);
+            setSlider(colorSlider, 100, displays.color);
+            setSlider(brightnessSlider, 100, displays.bright);
+            setSlider(contrastSlider, 100, displays.contrast);
+        }
+
+        function setSlider(el, val, display) {
+            el.value = val;
+            display.innerText = val + "%";
+        }
+
+        // ==========================================
+        // 2. CORE ALGORITHM (Dynamic)
+        // ==========================================
+        async function preProcessArtisticVersion(posterizationLevel, sharpnessLevel) {
+            showLoading(true);
+            await new Promise(resolve => setTimeout(resolve, 50)); // UI Breath
+
+            const offCanvas = document.createElement('canvas');
+            offCanvas.width = canvas.width;
+            offCanvas.height = canvas.height;
+            const offCtx = offCanvas.getContext('2d');
+
+            offCtx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
+            const imgData = offCtx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imgData.data;
+            const copyData = new Uint8ClampedArray(data);
+
+            // Mapeamento dos sliders para variáveis matemáticas
+            // Posterização: Slider 0 (Suave, step 4) -> Slider 100 (Chapado, step 64)
+            // Fórmula: base 4 + (val / 100 * 60)
+            const pStep = 4 + (posterizationLevel / 100 * 60);
+            
+            // Nitidez: Slider 0 (1.0x) -> Slider 100 (2.5x)
+            const sMult = 1.0 + (sharpnessLevel / 100 * 1.5);
+
+            for (let i = 0; i < data.length; i += 4) {
+                const avg = (copyData[i] + copyData[i + 1] + copyData[i + 2]) / 3;
+                
+                // Função de Posterização Dinâmica
+                const posterize = (val) => Math.floor(val / pStep) * pStep;
+                
+                // Aplica Nitidez/Contraste Dinâmico
+                let r = copyData[i] * sMult + 10;
+                let g = copyData[i+1] * sMult + 10;
+                let b = copyData[i+2] * sMult + 10;
+
+                data[i] = posterize(r);
+                data[i+1] = posterize(g);
+                data[i+2] = posterize(b);
+                
+                // Borda (Edge Detection)
+                // Ajusta sensibilidade baseada na nitidez também
+                if (avg < 60) {
+                     data[i] *= 0.6;
+                     data[i+1] *= 0.6;
+                     data[i+2] *= 0.6;
+                } else {
+                     data[i] = Math.min(255, data[i] + 20);
+                     data[i+1] = Math.min(255, data[i+1] + 20);
+                     data[i+2] = Math.min(255, data[i+2] + 20);
+                }
+            }
+
+            const bitmap = await createImageBitmap(imgData);
+            artisticData = bitmap;
+            showLoading(false);
+            renderFinalImage();
+        }
+
+        function triggerStructuralUpdate() {
+            const p = parseInt(posterizationSlider.value);
+            const s = parseInt(sharpnessSlider.value);
+            preProcessArtisticVersion(p, s);
+        }
+
+        // ==========================================
+        // 3. EVENT LISTENERS
+        // ==========================================
+
+        // A. Sliders Pesados (Estruturais) -> Evento 'change' (ao soltar)
+        posterizationSlider.addEventListener('input', (e) => displays.poster.innerText = e.target.value + "%");
+        posterizationSlider.addEventListener('change', triggerStructuralUpdate);
+
+        sharpnessSlider.addEventListener('input', (e) => displays.sharp.innerText = e.target.value + "%");
+        sharpnessSlider.addEventListener('change', triggerStructuralUpdate);
+
+        // B. Sliders Leves (Filtros) -> Evento 'input' (Tempo real)
+        const renderParams = [effectSlider, brightnessSlider, contrastSlider, colorSlider];
+        
+        effectSlider.addEventListener('input', (e) => {
+            displays.effect.innerText = e.target.value + "%";
+            requestAnimationFrame(renderFinalImage);
+        });
+
+        brightnessSlider.addEventListener('input', (e) => {
+            displays.bright.innerText = e.target.value + "%";
+            requestAnimationFrame(renderFinalImage);
+        });
+
+        contrastSlider.addEventListener('input', (e) => {
+            displays.contrast.innerText = e.target.value + "%";
+            requestAnimationFrame(renderFinalImage);
+        });
+
+        colorSlider.addEventListener('input', (e) => {
+            displays.color.innerText = e.target.value + "%";
+            requestAnimationFrame(renderFinalImage);
+        });
+
+
+        // ==========================================
+        // 4. RENDERIZAÇÃO FINAL
+        // ==========================================
+        function renderFinalImage() {
+            if (!originalImage.src || !artisticData) return;
+
+            const effectIntensity = effectSlider.value;
+            const bVal = brightnessSlider.value / 100;
+            const cVal = contrastSlider.value / 100;
+            const sVal = colorSlider.value / 100; // Saturação
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Aplica filtros GPU (Brilho, Contraste, Cor/Saturação)
+            ctx.filter = `brightness(${bVal}) contrast(${cVal}) saturate(${sVal})`;
+
+            // 1. Original
+            ctx.globalAlpha = 1;
+            ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
+
+            // 2. Arte (Pre-processed bitmap)
+            ctx.globalAlpha = effectIntensity / 100;
+            ctx.drawImage(artisticData, 0, 0, canvas.width, canvas.height);
+
+            // Reset
+            ctx.globalAlpha = 1.0;
+            ctx.filter = 'none';
+        }
+
+        // Utils
+        function showLoading(show) {
+            loadingOverlay.style.display = show ? 'flex' : 'none';
+        }
+
+        resetBtn.addEventListener('click', () => {
+            imageInput.value = '';
+            originalImage = new Image();
+            originalView.src = '';
+            artisticData = null;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            comparisonContainer.style.display = 'none';
+            controlsPanel.style.display = 'none';
+            uploadZone.style.display = 'flex';
+            uploadZone.style.opacity = '1';
+        });
+
+        downloadBtn.addEventListener('click', () => {
+            renderFinalImage();
+            const link = document.createElement('a');
+            link.download = 'Vexa_HQ_FullEdit.png';
+            link.href = canvas.toDataURL('image/png', 1.0);
+            link.click();
+        });
+    </script>
+</body>
+</html>
