@@ -13,22 +13,15 @@
          * =========================================
          */
         :root {
-            /* Paleta Strauz Magic */
             --bg-dark: #0f0b15;
             --bg-card: rgba(255, 255, 255, 0.05);
             --bg-card-hover: rgba(255, 255, 255, 0.08);
-            
-            /* Gradiente Signature */
             --gradient-magic: linear-gradient(135deg, #FF00CC 0%, #333399 100%);
             --accent: #FF00CC; 
-            --accent-secondary: #00E5FF;
             --accent-glow: rgba(255, 0, 204, 0.5);
-            
             --text-main: #ffffff;
             --text-muted: #a0a0b0;
             --border: rgba(255, 255, 255, 0.15);
-            
-            /* UI Metrics */
             --radius: 24px;
             --transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
         }
@@ -43,45 +36,28 @@
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
-            /* Background atmosférico */
             background-image: 
                 radial-gradient(circle at 20% 20%, rgba(51, 51, 153, 0.4), transparent 40%),
                 radial-gradient(circle at 80% 80%, rgba(255, 0, 204, 0.2), transparent 40%);
         }
 
-        /* Tipografia */
-        h1, h2, h3 { font-weight: 600; }
-        .magic-font { 
+        header { padding: 3rem 1.5rem; text-align: center; }
+        .brand { 
+            font-size: 2.5rem; 
+            margin-bottom: 0.5rem; 
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5); 
             font-family: 'Nunito', sans-serif; 
-            font-weight: 900; 
-            letter-spacing: -0.02em;
+            font-weight: 900;
             background: linear-gradient(to right, #fff, #e0e0e0);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
-        /* Layout Principal */
-        header {
-            padding: 3rem 1.5rem;
-            text-align: center;
-        }
-
-        .brand {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        .subtitle {
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            font-weight: 300;
-        }
+        .subtitle { font-size: 1.1rem; color: var(--text-muted); font-weight: 300; }
 
         main {
             flex: 1;
             width: 100%;
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 0 1.5rem 4rem;
             display: flex;
@@ -90,10 +66,6 @@
             gap: 2.5rem;
         }
 
-        /* * =========================================
-         * UPLOAD ZONE (Glassmorphism)
-         * =========================================
-         */
         .upload-zone {
             width: 100%;
             max-width: 650px;
@@ -108,36 +80,13 @@
             align-items: center;
             cursor: pointer;
             transition: var(--transition);
-            position: relative;
-            overflow: hidden;
         }
-
-        .upload-zone:hover {
-            border-color: var(--accent);
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-        }
-
-        .upload-zone::before {
-            content: '';
-            position: absolute;
-            width: 150%;
-            height: 150%;
-            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 60%);
-            opacity: 0;
-            transition: var(--transition);
-            pointer-events: none;
-        }
-        .upload-zone:hover::before { opacity: 0.1; }
 
         .upload-icon { font-size: 3rem; margin-bottom: 1rem; filter: drop-shadow(0 0 10px var(--accent-glow)); }
-        .upload-text { color: var(--text-main); font-weight: 500; font-size: 1.1rem; z-index: 2; }
-        .upload-subtext { color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem; z-index: 2; }
-        
         #fileInput { display: none; }
 
         /* * =========================================
-         * WORKSPACE & COMPARISON SLIDER
+         * NOVO LAYOUT LADO A LADO
          * =========================================
          */
         .workspace {
@@ -149,112 +98,50 @@
             animation: popIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .comparison-container {
+        .side-by-side-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Duas colunas iguais */
+            gap: 20px;
+            width: 100%;
+        }
+
+        .image-box {
             position: relative;
             width: 100%;
-            max-width: 900px;
-            aspect-ratio: 16/9; 
             border-radius: var(--radius);
             overflow: hidden;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
-            background: #000;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
             border: 1px solid rgba(255,255,255,0.1);
+            background: #000;
         }
 
-        /* Canvas: Processado (Fundo) */
-        #magicCanvas {
+        canvas {
             width: 100%;
-            height: 100%;
-            display: block;
-            image-rendering: auto; 
-        }
-
-        /* Canvas: Original (Frente - com máscara) */
-        #originalCanvasWrapper {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            clip-path: inset(0 50% 0 0); 
-            border-right: 2px solid white;
-            box-shadow: 5px 0 20px rgba(0,0,0,0.5); 
-        }
-
-        #originalCanvas {
-            width: 100%;
-            height: 100%;
+            height: auto;
             display: block;
         }
 
-        /* Badges */
         .badge {
             position: absolute;
-            top: 1.5rem;
-            padding: 0.6rem 1.2rem;
+            top: 1rem;
+            left: 1rem;
+            padding: 0.5rem 1rem;
             background: rgba(0,0,0,0.7);
             backdrop-filter: blur(10px);
             border-radius: 50px;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            pointer-events: none;
-            z-index: 5;
             border: 1px solid rgba(255,255,255,0.1);
         }
-        .badge-original { left: 1.5rem; }
-        .badge-magic { 
-            right: 1.5rem; 
-            background: rgba(255, 0, 204, 0.2);
-            border-color: var(--accent);
-            color: #fff;
-            text-shadow: 0 0 10px var(--accent);
-        }
 
-        /* Slider Handle */
-        .slider-handle {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 48px;
-            height: 48px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 30px white;
-            pointer-events: none;
-            z-index: 6;
-            color: var(--accent);
-        }
-        
-        .slider-control {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            transform: translateY(-50%);
-            z-index: 10;
-            opacity: 0;
-            cursor: ew-resize;
-        }
+        .badge-magic { color: var(--accent); border-color: var(--accent); }
 
         /* * =========================================
          * CONTROLS & LOADER
          * =========================================
          */
-        .controls {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 1rem;
-        }
-
+        .controls { display: flex; gap: 1rem; margin-top: 1rem; }
         .btn {
             padding: 1rem 2.5rem;
             border: none;
@@ -264,68 +151,25 @@
             cursor: pointer;
             transition: var(--transition);
             font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
+        .btn-magic { background: var(--gradient-magic); color: white; box-shadow: 0 10px 30px var(--accent-glow); }
+        .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text-main); }
 
-        .btn-magic {
-            background: var(--gradient-magic);
-            color: white;
-            box-shadow: 0 10px 30px var(--accent-glow);
-        }
-        .btn-magic:hover { 
-            transform: translateY(-3px) scale(1.02); 
-            box-shadow: 0 15px 40px var(--accent-glow); 
-            filter: brightness(1.1);
-        }
+        .loader-container { display: none; flex-direction: column; align-items: center; gap: 1.5rem; }
+        .magic-wand-loader { width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
 
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--border);
-            color: var(--text-main);
-        }
-        .btn-outline:hover { border-color: white; background: rgba(255,255,255,0.05); }
-
-        /* Loader Mágico */
-        .loader-container {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            gap: 1.5rem;
-        }
-        
-        .magic-wand-loader {
-            width: 60px;
-            height: 60px;
-            border: 4px solid rgba(255,255,255,0.1);
-            border-top: 4px solid var(--accent);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        .loading-text {
-            font-family: 'Nunito', sans-serif;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            animation: pulse 1.5s infinite ease-in-out;
-        }
-
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
         @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
         @media(max-width: 768px) {
-            .brand { font-size: 1.8rem; }
-            .comparison-container { border-radius: 0; width: 100vw; margin-left: -1.5rem; }
-            .btn { width: 100%; justify-content: center; }
+            .side-by-side-container { grid-template-columns: 1fr; } /* Empilha no mobile */
         }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="brand magic-font">Strauz Magic Light</div>
+        <div class="brand">Strauz Magic Light</div>
         <p class="subtitle">A luz que transforma realidade em cinema.</p>
     </header>
 
@@ -333,123 +177,73 @@
         <div class="upload-zone" id="dropZone">
             <div class="upload-icon">✨</div>
             <div class="upload-text">Toque aqui para acender a mágica</div>
-            <div class="upload-subtext">Suporta JPG e PNG de alta resolução</div>
             <input type="file" id="fileInput" accept="image/png, image/jpeg, image/jpg">
         </div>
 
         <div class="loader-container" id="loader">
             <div class="magic-wand-loader"></div>
-            <p class="loading-text">CRIANDO A LUZ...</p>
+            <p>CRIANDO A LUZ...</p>
         </div>
 
         <div class="workspace" id="workspace">
-            
-            <div class="comparison-container" id="comparisonContainer">
-                <canvas id="magicCanvas"></canvas>
-                
-                <div id="originalCanvasWrapper">
+            <div class="side-by-side-container">
+                <div class="image-box">
+                    <div class="badge">Original</div>
                     <canvas id="originalCanvas"></canvas>
                 </div>
-
-                <div class="badge badge-original">Original</div>
-                <div class="badge badge-magic">Magic Light</div>
-
-                <div class="slider-handle" id="sliderHandle">↔</div>
-                <input type="range" min="0" max="100" value="50" class="slider-control" id="sliderInput">
+                
+                <div class="image-box">
+                    <div class="badge badge-magic">Magic Light</div>
+                    <canvas id="magicCanvas"></canvas>
+                </div>
             </div>
 
             <div class="controls">
                 <button class="btn btn-outline" id="resetBtn">Carregar Outra</button>
-                <button class="btn btn-magic" id="downloadBtn">
-                    <span>✨ Baixar Obra de Arte</span>
-                </button>
+                <button class="btn btn-magic" id="downloadBtn">Baixar Obra de Arte</button>
             </div>
-            
-            <p style="font-size: 0.8rem; color: var(--text-muted); max-width: 500px; text-align: center; margin-top: 1rem;">
-                *Nota: Simulação de frontend "Strauz Magic Light". Para renderização 3D profunda, integre com API.
-            </p>
         </div>
     </main>
 
     <script>
-        /**
-         * STRAUZ MAGIC LIGHT - Controller
-         * Author: Neo (Senior Frontend Dev)
-         * Description: Interface de comparação e simulação de filtro Cinematic Soft Glow.
-         */
-
         document.addEventListener('DOMContentLoaded', () => {
-            
-            // DOM Elements
             const dropZone = document.getElementById('dropZone');
             const fileInput = document.getElementById('fileInput');
             const loader = document.getElementById('loader');
             const workspace = document.getElementById('workspace');
-            const comparisonContainer = document.getElementById('comparisonContainer');
-            
-            // Canvas
             const magicCanvas = document.getElementById('magicCanvas');
             const originalCanvas = document.getElementById('originalCanvas');
             const ctxMagic = magicCanvas.getContext('2d');
             const ctxOriginal = originalCanvas.getContext('2d');
-
-            // Sliders
-            const sliderInput = document.getElementById('sliderInput');
-            const originalWrapper = document.getElementById('originalCanvasWrapper');
-            const sliderHandle = document.getElementById('sliderHandle');
-
-            // Buttons
             const resetBtn = document.getElementById('resetBtn');
             const downloadBtn = document.getElementById('downloadBtn');
 
             let sourceImage = null;
 
-            // ==========================================
-            // 1. DRAG & DROP UX
-            // ==========================================
-
             dropZone.addEventListener('click', () => fileInput.click());
-            dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.borderColor = 'var(--accent)'; });
-            dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor = 'var(--border)'; });
-            dropZone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                if(e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
-            });
-            fileInput.addEventListener('change', (e) => {
-                if (e.target.files.length) handleFile(e.target.files[0]);
-            });
-
-            // ==========================================
-            // 2. CORE LOGIC
-            // ==========================================
+            fileInput.addEventListener('change', (e) => { if (e.target.files.length) handleFile(e.target.files[0]); });
 
             function handleFile(file) {
-                if (!file || !file.type.startsWith('image/')) return;
-
-                // UX Transition
+                if (!file) return;
                 dropZone.style.display = 'none';
-                workspace.style.display = 'none';
                 loader.style.display = 'flex';
-
-                // Delay artificial para UX
                 setTimeout(() => {
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         sourceImage = new Image();
                         sourceImage.onload = () => {
-                            setupAndRender();
+                            renderImages();
                             loader.style.display = 'none';
                             workspace.style.display = 'flex';
                         };
                         sourceImage.src = e.target.result;
                     };
                     reader.readAsDataURL(file);
-                }, 1500);
+                }, 1200);
             }
 
-            function setupAndRender() {
-                // Responsividade do Canvas
-                const maxWidth = 1200; 
+            function renderImages() {
+                const maxWidth = 800; 
                 let width = sourceImage.width;
                 let height = sourceImage.height;
 
@@ -459,69 +253,34 @@
                     height = height * ratio;
                 }
 
-                // Configurar Dimensões
                 magicCanvas.width = width;
                 magicCanvas.height = height;
                 originalCanvas.width = width;
                 originalCanvas.height = height;
-                comparisonContainer.style.aspectRatio = `${width}/${height}`;
 
-                // 1. Renderizar Original
                 ctxOriginal.drawImage(sourceImage, 0, 0, width, height);
-
-                // 2. Renderizar "Magic Light" (Simulação)
                 applyMagicFilter(ctxMagic, width, height);
             }
 
-            /**
-             * APPLY MAGIC FILTER (The "Light" Engine)
-             * Simula o look Pixar client-side:
-             * - Saturação Alta (Cores vivas)
-             * - Screen Blend (Glow)
-             * - Soft Blur
-             */
+            // Método Strauz Magic Light Intocado
             function applyMagicFilter(ctx, w, h) {
-                // 1. Desenhar base
                 ctx.drawImage(sourceImage, 0, 0, w, h);
-
-                // 2. Manipular pixels para efeito "Soft Focus"
-                
-                // Passo A: Aumentar vivacidade (Saturação + Contraste)
                 ctx.globalCompositeOperation = 'source-over';
                 ctx.filter = 'saturate(140%) contrast(110%) brightness(105%)';
                 ctx.drawImage(sourceImage, 0, 0, w, h);
-                
-                // Passo B: Efeito "Magic Light Glow" (Duplicar camada com blur e screen blend)
                 ctx.filter = 'blur(8px)';
-                ctx.globalCompositeOperation = 'screen'; // Modo de mistura para luz
-                ctx.globalAlpha = 0.45; // Levemente mais forte para justificar o nome "Light"
+                ctx.globalCompositeOperation = 'screen';
+                ctx.globalAlpha = 0.45;
                 ctx.drawImage(sourceImage, 0, 0, w, h);
-
-                // Reset
                 ctx.filter = 'none';
                 ctx.globalAlpha = 1.0;
                 ctx.globalCompositeOperation = 'source-over';
             }
 
-            // ==========================================
-            // 3. SLIDER INTERACTION
-            // ==========================================
-
-            sliderInput.addEventListener('input', (e) => {
-                const val = e.target.value;
-                originalWrapper.style.clipPath = `inset(0 ${100 - val}% 0 0)`;
-                sliderHandle.style.left = `${val}%`;
-            });
-
             resetBtn.addEventListener('click', () => {
                 workspace.style.display = 'none';
                 dropZone.style.display = 'flex';
                 fileInput.value = '';
-                sourceImage = null;
-                // Reset slider
-                sliderInput.value = 50;
-                originalWrapper.style.clipPath = `inset(0 50% 0 0)`;
-                sliderHandle.style.left = `50%`;
             });
 
             downloadBtn.addEventListener('click', () => {
@@ -530,7 +289,6 @@
                 link.href = magicCanvas.toDataURL('image/png', 1.0); 
                 link.click();
             });
-
         });
     </script>
 </body>
