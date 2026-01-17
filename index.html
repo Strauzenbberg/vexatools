@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,31 +40,29 @@
         }
 
         /* HEADER & LOGO ALIGNMENT */
-        /* Container principal do cabeçalho, alinhando logo e seletor */
         .header-container {
             width: 90%;
             max-width: 1200px;
-            padding: 20px 0 60px; /* Padding superior ajustado para alinhamento */
+            padding: 20px 0 60px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            position: relative; /* Necessário para o posicionamento absoluto do seletor */
+            position: relative;
         }
 
-        /* Logo oficial substituindo o texto antigo */
         .logo-img {
-            max-width: 280px; /* Tamanho máximo da logo para telas grandes */
-            width: 100%; /* Responsividade em telas menores */
+            max-width: 280px;
+            width: 100%;
             height: auto;
             display: block;
             margin-bottom: 20px;
         }
 
-        /* LANGUAGE SELECTOR - Posicionado absolutamente em relação ao .header-container */
+        /* LANGUAGE SELECTOR */
         .lang-selector {
             position: absolute;
-            top: 25px; /* Alinhamento fino com o topo da logo */
-            right: 0; /* Alinhado à direita do container */
+            top: 25px;
+            right: 0;
             z-index: 100;
         }
 
@@ -114,10 +112,10 @@
         .footer-link { color: var(--text-main); font-weight: 600; text-decoration: none; transition: color 0.3s ease; }
         .footer-link:hover { color: var(--accent-color); }
 
-        /* Responsividade para logo e alinhamento */
+        /* Responsividade */
         @media (max-width: 768px) {
-            .header-container { padding-top: 80px; } /* Mais espaço para o seletor em telas pequenas */
-            .lang-selector { top: 20px; right: 50%; transform: translateX(50%); } /* Seletor centralizado acima da logo */
+            .header-container { padding-top: 80px; }
+            .lang-selector { top: 20px; right: 50%; transform: translateX(50%); }
             .logo-img { max-width: 220px; margin-bottom: 15px; }
         }
     </style>
@@ -127,6 +125,7 @@
     <header class="header-container">
         <div class="lang-selector">
             <select id="langSelect" onchange="updateLanguage()">
+                <option value="pt" selected>🇧🇷 Portuguese</option>
                 <option value="en">🇺🇸 English</option>
                 <option value="zh">🇨🇳 Chinese</option>
                 <option value="de">🇩🇪 German</option>
@@ -136,14 +135,13 @@
                 <option value="ko">🇰🇷 Korean</option>
                 <option value="it">🇮🇹 Italian</option>
                 <option value="ru">🇷🇺 Russian</option>
-                <option value="pt">🇧🇷 Portuguese</option>
             </select>
         </div>
 
         <img src="https://strauzenbberg.github.io/vexatools/logo.webp" alt="Vexa Tools Logo" class="logo-img">
         
-        <span class="highlight-blue" id="subheadline">Local Processing • Total Privacy</span>
-        <p class="tagline" id="mainTagline">Your files never leave your computer. High-performance integrated ecosystem for batch file manipulation.</p>
+        <span class="highlight-blue" id="subheadline">Processamento Local • Privacidade Total</span>
+        <p class="tagline" id="mainTagline">Seus arquivos nunca saem do seu computador. Ecossistema integrado para manipulação de arquivos em lote.</p>
     </header>
 
     <main class="hub-container">
@@ -151,104 +149,104 @@
             <div>
                 <span class="tool-icon">📑</span>
                 <h2 class="tool-name">PDF</h2>
-                <p class="tool-desc" data-key="desc-pdf">Optimization, merging, and manipulation of PDF files in seconds.</p>
+                <p class="tool-desc" data-key="desc-pdf">Otimização, junção e manipulação de arquivos PDF em segundos.</p>
             </div>
-            <div class="btn-enter"><span data-key="access">Access App</span> <span>→</span></div>
+            <div class="btn-enter"><span data-key="access">Acessar App</span> <span>→</span></div>
         </a>
         
         <a href="https://strauzenbberg.github.io/vexatools/docx" class="tool-card">
             <div>
                 <span class="tool-icon">📄</span>
                 <h2 class="tool-name">DOCX</h2>
-                <p class="tool-desc" data-key="desc-docx">Intelligent conversion and Word document editing with surgical precision.</p>
+                <p class="tool-desc" data-key="desc-docx">Conversão inteligente e edição de documentos Word com precisão cirúrgica.</p>
             </div>
-            <div class="btn-enter"><span data-key="access">Access App</span> <span>→</span></div>
+            <div class="btn-enter"><span data-key="access">Acessar App</span> <span>→</span></div>
         </a>
 
         <a href="https://strauzenbberg.github.io/vexatools/jpg" class="tool-card">
             <div>
                 <span class="tool-icon">🖼️</span>
                 <h2 class="tool-name">JPG</h2>
-                <p class="tool-desc" data-key="desc-jpg">Advanced JPG processing with lossless compression algorithms.</p>
+                <p class="tool-desc" data-key="desc-jpg">Processamento avançado de imagens JPG com compressão sem perda.</p>
             </div>
-            <div class="btn-enter"><span data-key="access">Access App</span> <span>→</span></div>
+            <div class="btn-enter"><span data-key="access">Acessar App</span> <span>→</span></div>
         </a>
 
         <a href="https://strauzenbberg.github.io/vexatools/qrcode/" class="tool-card">
             <div>
                 <span class="tool-icon">🔳</span>
                 <h2 class="tool-name">QRcode</h2>
-                <p class="tool-desc" data-key="desc-qrcode">Instant high-resolution QR Code generator.</p>
+                <p class="tool-desc" data-key="desc-qrcode">Gerador instantâneo de QR Code em alta resolução.</p>
             </div>
-            <div class="btn-enter"><span data-key="access">Access App</span> <span>→</span></div>
+            <div class="btn-enter"><span data-key="access">Acessar App</span> <span>→</span></div>
         </a>
 
         <a href="https://strauzenbberg.github.io/vexatools/webp" class="tool-card">
             <div>
                 <span class="tool-icon">🌐</span>
                 <h2 class="tool-name">WEBP</h2>
-                <p class="tool-desc" data-key="desc-webp">Convert images to WebP for maximum loading performance.</p>
+                <p class="tool-desc" data-key="desc-webp">Converta suas imagens para WebP e ganhe performance máxima.</p>
             </div>
-            <div class="btn-enter"><span data-key="access">Access App</span> <span>→</span></div>
+            <div class="btn-enter"><span data-key="access">Acessar App</span> <span>→</span></div>
         </a>
 
         <a href="https://strauzenbberg.github.io/vexatools/magicpdf/" class="tool-card">
             <div>
                 <span class="tool-icon">🪄</span>
                 <h2 class="tool-name">Magic PDF</h2>
-                <p class="tool-desc" data-key="desc-magicpdf">Reconstruction and intelligent extraction of complex PDF layouts.</p>
+                <p class="tool-desc" data-key="desc-magicpdf">Reconstrução e extração inteligente de layouts PDF complexos.</p>
             </div>
-            <div class="btn-enter"><span data-key="access">Access App</span> <span>→</span></div>
+            <div class="btn-enter"><span data-key="access">Acessar App</span> <span>→</span></div>
         </a>
 
         <a href="https://strauzenbberg.github.io/vexatools/mockup/" class="tool-card">
             <div>
                 <span class="tool-icon">💻</span>
                 <h2 class="tool-name">Mockup</h2>
-                <p class="tool-desc" data-key="desc-mockup">Instant device frames and realistic 3D presentations.</p>
+                <p class="tool-desc" data-key="desc-mockup">Molduras de dispositivos e apresentações 3D realistas.</p>
             </div>
-            <div class="btn-enter"><span data-key="access">Access App</span> <span>→</span></div>
+            <div class="btn-enter"><span data-key="access">Acessar App</span> <span>→</span></div>
         </a>
 
         <a href="https://strauzenbberg.github.io/vexatools/webm" class="tool-card">
             <div>
                 <span class="tool-icon">🎬</span>
                 <h2 class="tool-name">WEBM</h2>
-                <p class="tool-desc" data-key="desc-webm">Video conversion to WebM format optimized for the modern web.</p>
+                <p class="tool-desc" data-key="desc-webm">Conversão de vídeos para o formato WebM otimizado para a web.</p>
             </div>
-            <div class="btn-enter"><span data-key="access">Access App</span> <span>→</span></div>
+            <div class="btn-enter"><span data-key="access">Acessar App</span> <span>→</span></div>
         </a>
 
         <a href="https://strauzenbberg.github.io/vexatools/hdr/" class="tool-card">
             <div>
                 <span class="tool-icon">✨</span>
                 <h2 class="tool-name">HDR</h2>
-                <p class="tool-desc" data-key="desc-hdr">Intelligent High Dynamic Range processing for photos and images.</p>
+                <p class="tool-desc" data-key="desc-hdr">Processamento inteligente HDR para fotos e imagens estáticas.</p>
             </div>
-            <div class="btn-enter"><span data-key="access">Access App</span> <span>→</span></div>
+            <div class="btn-enter"><span data-key="access">Acessar App</span> <span>→</span></div>
         </a>
 
         <a href="https://strauzenbberg.github.io/vexatools/safe/" class="tool-card">
             <div>
                 <span class="tool-icon">🔐</span>
                 <h2 class="tool-name">Safe</h2>
-                <p class="tool-desc" data-key="desc-safe">Secure encryption vault for your most sensitive data.</p>
+                <p class="tool-desc" data-key="desc-safe">Cofre de criptografia seguro para seus dados mais sensíveis.</p>
             </div>
-            <div class="btn-enter"><span data-key="access">Access App</span> <span>→</span></div>
+            <div class="btn-enter"><span data-key="access">Acessar App</span> <span>→</span></div>
         </a>
 
         <a href="https://strauzenbberg.github.io/vexatools/magiclight/" class="tool-card">
             <div>
                 <span class="tool-icon">💡</span>
                 <h2 class="tool-name">Magic Light</h2>
-                <p class="tool-desc" data-key="desc-magiclight">Advanced virtual lighting control and atmospheric adjustments.</p>
+                <p class="tool-desc" data-key="desc-magiclight">Controle avançado de iluminação virtual e ajustes atmosféricos.</p>
             </div>
-            <div class="btn-enter"><span data-key="access">Access App</span> <span>→</span></div>
+            <div class="btn-enter"><span data-key="access">Acessar App</span> <span>→</span></div>
         </a>
     </main>
 
     <div style="margin: 40px 0; width: 90%; max-width: 300px;">
-        <button class="btn-pay" id="mainActionBtn" onclick="handleDonationAction()">Support the Project</button>
+        <button class="btn-pay" id="mainActionBtn" onclick="handleDonationAction()">Copiar Chave PIX</button>
     </div>
 
     <div class="modal-overlay" id="modal">
@@ -267,7 +265,7 @@
     </div>
 
     <footer>
-        © 2025 Strauz Tech - <a href="mailto:strauzenbberg@outlook.com" class="footer-link" id="contactLink" data-key="contact">Contact</a>
+        © 2025 Strauz Tech - <a href="mailto:strauzenbberg@outlook.com" class="footer-link" id="contactLink" data-key="contact">Contato</a>
     </footer>
 
     <script data-goatcounter="https://vexatools.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
@@ -295,6 +293,7 @@
             document.getElementById('subheadline').innerText = t.sub;
             document.getElementById('mainTagline').innerText = t.tagline;
             document.getElementById('mainActionBtn').innerText = t.support;
+            document.getElementById('contactLink').innerText = t.contact;
             
             document.querySelectorAll('[data-key]').forEach(el => {
                 const key = el.getAttribute('data-key');
