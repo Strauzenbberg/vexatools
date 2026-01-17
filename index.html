@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VEXA TOOLS | High-Performance Digital Ecosystem</title>
+    <title>STRAUZ TOOLS | High-Performance Digital Ecosystem</title>
     <link rel="preload" href="https://strauzenbberg.github.io/vexatools/logo.webp" as="image">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
@@ -16,6 +16,14 @@
             --text-main: #ffffff;
             --text-secondary: #a1a1a6;
             --glass-blur: blur(12px);
+            
+            /* Cores dos Comunicadores */
+            --whatsapp-green: #25D366;
+            --messenger-blue: #0084FF;
+            --wechat-green: #7BB32E;
+            --line-green: #00C300;
+            --kakao-yellow: #FEE500;
+            --telegram-blue: #24A1DE;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
@@ -39,7 +47,7 @@
             z-index: -1;
         }
 
-        /* HEADER & LOGO ALIGNMENT */
+        /* HEADER */
         .header-container {
             width: 90%;
             max-width: 1200px;
@@ -107,6 +115,40 @@
         .btn-pay { width: 100%; background: var(--accent-color); color: white; border: none; padding: 18px; border-radius: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
         .btn-pay:hover { filter: brightness(1.1); transform: scale(1.02); }
 
+        /* FLOATING COMMUNICATOR BUTTON */
+        .btn-float-comm {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 50px;
+            height: 50px;
+            background-color: var(--whatsapp-green); /* Default fallback */
+            color: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-float-comm:hover {
+            transform: scale(1.1) translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0, 0.4);
+        }
+
+        .comm-icon {
+            width: 28px;
+            height: 28px;
+            fill: white;
+        }
+
+        /* KakaoTalk icon adjustment (usually black/brown on yellow) */
+        .btn-float-comm.kakao .comm-icon { fill: #3C1E1E; }
+
         /* FOOTER */
         footer { margin-top: auto; padding: 60px 20px; color: var(--text-secondary); font-size: 0.85rem; text-align: center; letter-spacing: 0.5px; }
         .footer-link { color: var(--text-main); font-weight: 600; text-decoration: none; transition: color 0.3s ease; }
@@ -117,6 +159,7 @@
             .header-container { padding-top: 80px; }
             .lang-selector { top: 20px; right: 50%; transform: translateX(50%); }
             .logo-img { max-width: 220px; margin-bottom: 15px; }
+            .btn-float-comm { bottom: 20px; right: 20px; }
         }
     </style>
 </head>
@@ -138,7 +181,7 @@
             </select>
         </div>
 
-        <img src="https://strauzenbberg.github.io/vexatools/logo.webp" alt="Vexa Tools Logo" class="logo-img">
+        <img src="https://strauzenbberg.github.io/vexatools/logo.webp" alt="Strauz Tools Logo" class="logo-img">
         
         <span class="highlight-blue" id="subheadline">Processamento Local • Privacidade Total</span>
         <p class="tagline" id="mainTagline">Seus arquivos nunca saem do seu computador. Ecossistema integrado para manipulação de arquivos em lote.</p>
@@ -249,9 +292,12 @@
         <button class="btn-pay" id="mainActionBtn" onclick="handleDonationAction()">Copiar Chave PIX</button>
     </div>
 
+    <a href="#" class="btn-float-comm" target="_blank" id="commBtn">
+        </a>
+
     <div class="modal-overlay" id="modal">
         <div class="modal-content">
-            <h3 id="modalTitle">Support Vexa Tools</h3>
+            <h3 id="modalTitle">Support Strauz Tools</h3>
             <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 10px;" id="modalDesc">Help us keep it ad-free and private.</p>
             <div class="donation-options">
                 <button class="opt-btn" onclick="setVal(5)">$5</button>
@@ -272,35 +318,132 @@
 
     <script>
         const pixKey = "153d672d-9acb-4fc9-90b9-42ad3a097709";
-        
+        const emailContact = "mailto:strauzenbberg@outlook.com";
+        const shareUrl = "https://strauzenbberg.github.io/vexatools";
+
+        // Configuração dos Comunicadores (SVG Paths e Cores)
+        const commConfig = {
+            whatsapp: {
+                color: 'var(--whatsapp-green)',
+                path: 'M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.008-.57-.008-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z'
+            },
+            messenger: {
+                color: 'var(--messenger-blue)',
+                path: 'M12 0C5.373 0 0 4.973 0 11.108c0 3.497 1.744 6.616 4.469 8.658v3.748l4.081-2.24c1.096.303 2.261.467 3.45.467 6.627 0 12-4.973 12-11.108C24 4.973 18.627 0 12 0zm1.144 14.896l-2.863-4.576-5.584 4.576 6.138-6.516 2.923 4.516 5.525-4.516-6.139 6.516z'
+            },
+            wechat: {
+                color: 'var(--wechat-green)',
+                path: 'M8.69,2.2c-4.3,0-7.79,3.13-7.79,7c0,2.15,1.08,4.06,2.77,5.32L2.94,16.5l3.25-1.74c0.78,0.22,1.61,0.34,2.48,0.34 c0.16,0,0.32,0,0.48-0.01c-0.12-0.56-0.19-1.15-0.19-1.75c0-4.66,4.19-8.45,9.36-8.45c0.55,0,1.09,0.04,1.62,0.13 C18.17,3.22,13.75,2.2,8.69,2.2z M17.65,6.54c-4.52,0-8.19,3.04-8.19,6.79c0,3.75,3.67,6.79,8.19,6.79c0.88,0,1.72-0.12,2.5-0.33 l2.67,1.45l-0.56-2.07c1.37-1.1,2.24-2.67,2.24-4.41C24.54,8.81,21.46,6.54,17.65,6.54z M16.03,10.23c0.35,0,0.64,0.25,0.64,0.56 c0,0.31-0.29,0.56-0.64,0.56c-0.35,0-0.64-0.25-0.64-0.56C15.39,10.48,15.68,10.23,16.03,10.23z M20.47,10.23 c0.35,0,0.64,0.25,0.64,0.56c0,0.31-0.29,0.56-0.64,0.56c-0.35,0-0.64-0.25-0.64-0.56C19.83,10.48,20.12,10.23,20.47,10.23z'
+            },
+            line: {
+                color: 'var(--line-green)',
+                path: 'M20.9,7.6c0-3.6-4-6.6-8.9-6.6S3.1,4,3.1,7.6c0,3.3,2.9,6,7,6.5c0.3,0.1,0.6,0.2,0.7,0.6c0.1,0.3,0.3,1.3,0.4,1.6 c0.1,0.4,0,1-0.4,1.3c0,0-1.5,0.8-1.8,1C6.3,20,3,15.8,3,15.8s5,5.6,12.7,3c3.7-1.3,5.2-4.5,5.2-4.5C20.9,14.3,20.9,7.6,20.9,7.6z M7.7,10c-0.3,0-0.5-0.2-0.5-0.5v-3c0-0.3,0.2-0.5,0.5-0.5h1.7c0.3,0,0.5,0.2,0.5,0.5s-0.2,0.5-0.5,0.5H8.2V8h1.1 c0.3,0,0.5,0.2,0.5,0.5s-0.2,0.5-0.5,0.5H7.7z M10.9,10c-0.3,0-0.5-0.2-0.5-0.5v-3c0-0.3,0.2-0.5,0.5-0.5s0.5,0.2,0.5,0.5v3 C11.4,9.7,11.2,10,10.9,10z M14.6,10c-0.3,0-0.5-0.2-0.5-0.5V7.4l-1.3,1.8c-0.1,0.1-0.2,0.2-0.4,0.2c-0.3,0-0.5-0.2-0.5-0.5v-3 c0-0.3,0.2-0.5,0.5-0.5s0.5,0.2,0.5,0.5v2l1.3-1.8c0.1-0.1,0.2-0.2,0.4-0.2c0.3,0,0.5,0.2,0.5,0.5v3C15.1,9.7,14.8,10,14.6,10z M17.9,10h-1.7c-0.3,0-0.5-0.2-0.5-0.5v-3c0-0.3,0.2-0.5,0.5-0.5h1.7c0.3,0,0.5,0.2,0.5,0.5s-0.2,0.5-0.5,0.5h-1.1 v0.7h1.1c0.3,0,0.5,0.2,0.5,0.5S18.2,9,17.9,9h-1.1v0.5h1.1c0.3,0,0.5,0.2,0.5,0.5S18.2,10,17.9,10z'
+            },
+            kakao: {
+                color: 'var(--kakao-yellow)',
+                path: 'M12,2C6.48,2,2,5.58,2,10c0,2.83,1.85,5.32,4.68,6.72l-1.2,4.42l4.98-3.29C10.82,17.94,11.41,18,12,18 c5.52,0,10-3.58,10-8S17.52,2,12,2z M7.71,12.06c-0.3,0.29-0.78,0.28-1.07-0.01c-0.29-0.3-0.28-0.78,0.01-1.07l2.84-2.84 c0.3-0.29,0.78-0.28,1.07,0.01c0.29,0.3,0.28,0.78-0.01,1.07L7.71,12.06z M16.3,10.98c0,0.41-0.34,0.75-0.75,0.75h-3.1 c-0.41,0-0.75-0.34-0.75-0.75s0.34-0.75,0.75-0.75h3.1C15.96,10.23,16.3,10.57,16.3,10.98z M16.3,8.02c0,0.41-0.34,0.75-0.75,0.75 h-3.1c-0.41,0-0.75-0.34-0.75-0.75S11.99,7.27,12.4,7.27h3.1C15.96,7.27,16.3,7.61,16.3,8.02z'
+            },
+            telegram: {
+                color: 'var(--telegram-blue)',
+                path: 'M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z'
+            }
+        };
+
         const translations = {
-            en: { sub: "Local Processing • Total Privacy", tagline: "Your files never leave your computer. High-performance integrated ecosystem for batch file manipulation.", access: "Access App", support: "Support the Project", pix: "Copy PIX Key", copied: "PIX Key Copied!", contact: "Contact", "desc-pdf": "Optimization, merging, and manipulation of PDF files in seconds.", "desc-docx": "Intelligent conversion and Word document editing with surgical precision.", "desc-jpg": "Advanced JPG processing with lossless compression algorithms.", "desc-webm": "Video conversion to WebM format optimized for the modern web.", "desc-webp": "Convert images to WebP for maximum loading performance.", "desc-hdr": "Intelligent High Dynamic Range processing for photos and images.", "desc-magicpdf": "Reconstruction and intelligent extraction of complex PDF layouts.", "desc-safe": "Secure encryption vault for your most sensitive data.", "desc-qrcode": "Instant high-resolution QR Code generator.", "desc-mockup": "Instant device frames and realistic 3D presentations.", "desc-magiclight": "Advanced virtual lighting control and atmospheric adjustments." },
-            pt: { sub: "Processamento Local • Privacidade Total", tagline: "Seus arquivos nunca saem do seu computador. Ecossistema integrado para manipulação de arquivos em lote.", access: "Acessar App", support: "Copiar Chave PIX", pix: "Copiar Chave PIX", copied: "Chave PIX Copiada!", contact: "Contato", "desc-pdf": "Otimização, junção e manipulação de arquivos PDF em segundos.", "desc-docx": "Conversão inteligente e edição de documentos Word com precisão cirúrgica.", "desc-jpg": "Processamento avançado de imagens JPG com compressão sem perda.", "desc-webm": "Conversão de vídeos para o formato WebM otimizado para a web.", "desc-webp": "Converta suas imagens para WebP e ganhe performance máxima.", "desc-hdr": "Processamento inteligente HDR para fotos e imagens estáticas.", "desc-magicpdf": "Reconstrução e extração inteligente de layouts PDF complexos.", "desc-safe": "Cofre de criptografia seguro para seus dados mais sensíveis.", "desc-qrcode": "Gerador instantâneo de QR Code em alta resolução.", "desc-mockup": "Molduras de dispositivos e apresentações 3D realistas.", "desc-magiclight": "Controle avançado de iluminação virtual e ajustes atmosféricos." },
-            zh: { sub: "本地处理 • 完全隐私", tagline: "您的文件永远不会离开您的计算机。用于批量文件操作的高性能集成生态系统。", access: "访问应用", support: "支持项目", contact: "联系方式", "desc-pdf": "几秒钟内优化、合并和处理 PDF 文件。", "desc-docx": "以极高的精度进行智能转换和 Word 文档编辑。", "desc-jpg": "采用无损压缩算法的高级 JPG 处理。", "desc-webm": "针对现代网络优化的 WebM 格式视频转换。", "desc-webp": "将图像转换为 WebP 以获得最佳加载性能。", "desc-hdr": "照片和图像的智能高动态范围处理。", "desc-magicpdf": "复杂 PDF 布局的重构和智能提取。", "desc-safe": "保护您最敏感数据的安全加密库。", "desc-qrcode": "即时高分辨率 QR 码生成器。", "desc-mockup": "即时设备框架和逼真的 3D 演示。", "desc-magiclight": "高级虚拟照明控制和大气调整。" },
-            de: { sub: "Lokale Verarbeitung • Volle Privatsphäre", tagline: "Ihre Dateien verlassen niemals Ihren Computer. Hochleistungs-Ökosystem für die Stapelverarbeitung.", access: "App öffnen", support: "Projekt unterstützen", contact: "Kontakt", "desc-pdf": "Optimierung, Zusammenführung und Bearbeitung von PDF-Dateien in Sekunden.", "desc-docx": "Intelligente Konvertierung und Bearbeitung von Word-Dokumenten.", "desc-jpg": "Fortschrittliche JPG-Verarbeitung mit verlustfreien Algorithmen.", "desc-webm": "Videokonvertierung in das für das Web optimierte WebM-Format.", "desc-webp": "Bilder in WebP konvertieren für maximale Ladeleistung.", "desc-hdr": "Intelligente HDR-Verarbeitung für Fotos und Bilder.", "desc-magicpdf": "Rekonstruktion und intelligente Extraktion komplexer PDF-Layouts.", "desc-safe": "Sicherer Verschlüsselungstresor für Ihre sensibelsten Daten.", "desc-qrcode": "Sofortiger hochauflösender QR-Code-Generator.", "desc-mockup": "Sofortige Geräterahmen und realistische 3D-Präsentationen.", "desc-magiclight": "Erweiterte virtuelle Beleuchtungssteuerung und atmosphärische Anpassungen." },
-            ja: { sub: "ローカル処理 • 完全なプライバシー", tagline: "ファイルがコンピュータから離れることはありません。バッチ処理用の高性能統合エコシステム。", access: "アプリにアクセス", support: "プロジェクトを支援", contact: "お問い合わせ", "desc-pdf": "PDFファイルの最適化、結合、操作を数秒で。", "desc-docx": "外科的精度でのインテリジェントな変換とWordドキュメントの編集。", "desc-jpg": "ロスレス圧縮アルゴリズムによる高度なJPG処理。", "desc-webm": "最新のウェブ向けに最適化されたWebM形式へのビデオ変換。", "desc-webp": "読み込みパフォーマンスを最大化するために画像をWebPに変換します。", "desc-hdr": "写真や画像のためのインテリジェントなHDR処理。", "desc-magicpdf": "複雑なPDFレイアウトの再構築とインテリジェントな抽出。", "desc-safe": "最も機密性の高いデータのための安全な暗号化保管庫。", "desc-qrcode": "瞬時の高解像度QRコードジェネレーター。", "desc-mockup": "瞬時のデバイスフレームとリアルな3Dプレゼンテーション。", "desc-magiclight": "高度な仮想照明制御と大気の調整。" },
-            fr: { sub: "Traitement local • Confidentialité totale", tagline: "Vos fichiers ne quittent jamais votre ordinateur. Écosystème intégré pour la manipulation de fichiers.", access: "Accéder à l'app", support: "Soutenir le projet", contact: "Contact", "desc-pdf": "Optimisation, fusion et manipulation de fichiers PDF en quelques secondes.", "desc-docx": "Conversion intelligente et édition de documents Word avec précision.", "desc-jpg": "Traitement JPG avancé avec algorithmes de compression sans perte.", "desc-webm": "Conversion vidéo au format WebM optimisé pour le web moderne.", "desc-webp": "Convertissez des images en WebP pour une performance maximale.", "desc-hdr": "Traitement HDR intelligent pour les photos et les images.", "desc-magicpdf": "Reconstruction et extraction intelligente de mises en page PDF complexes.", "desc-safe": "Coffre-fort de chiffrement sécurisé pour vos données sensibles.", "desc-qrcode": "Générateur de QR Code haute résolution instantané.", "desc-mockup": "Cadres d'appareils instantanés et présentations 3D réalistes.", "desc-magiclight": "Contrôle avancé de l'éclairage virtuel et ajustements atmosphériques." },
-            es: { sub: "Procesamiento local • Privacidad total", tagline: "Sus archivos nunca salen de su computadora. Ecosistema integrado para manipulación de archivos.", access: "Acceder a la aplicación", support: "Apoyar el proyecto", contact: "Contacto", "desc-pdf": "Optimización, combinación y manipulación de archivos PDF en segundos.", "desc-docx": "Conversión inteligente y edición de documentos Word con precisión.", "desc-jpg": "Procesamiento JPG avanzado con algoritmos de compresión sin pérdida.", "desc-webm": "Conversión de video al formato WebM optimizado para la web moderna.", "desc-webp": "Convierta imágenes a WebP para un rendimiento de carga máximo.", "desc-hdr": "Procesamiento inteligente de alto rango dinámico para fotos e imágenes.", "desc-magicpdf": "Reconstrucción y extracción inteligente de diseños PDF complejos.", "desc-safe": "Bóveda de cifrado segura para sus datos más sensibles.", "desc-qrcode": "Generador instantáneo de códigos QR de alta resolución.", "desc-mockup": "Marcos de dispositivos instantáneos y presentaciones 3D realistas.", "desc-magiclight": "Control avanzado de iluminación virtual y ajustes atmosféricos." },
-            ko: { sub: "로컬 처리 • 완전한 개인 정보 보호", tagline: "파일이 컴퓨터를 떠나지 않습니다. 일괄 파일 조작을 위한 고성능 통합 에코시스템.", access: "앱 접속", support: "프로젝트 지원", contact: "문의하기", "desc-pdf": "몇 초 만에 PDF 파일 최적화, 병합 및 조작.", "desc-docx": "정밀한 지능형 변환 및 Word 문서 편집.", "desc-jpg": "무손실 압축 알고리즘을 사용한 고급 JPG 처리.", "desc-webm": "현대 웹에 최적화된 WebM 형식으로 비디오 변환.", "desc-webp": "최대 로딩 성능을 위해 이미지를 WebP로 변환합니다.", "desc-hdr": "사진 및 이미지를 위한 지능형 고다이나믹 레인지 처리.", "desc-magicpdf": "복잡한 PDF 레이아웃의 재구성 및 지능형 추출.", "desc-safe": "가장 민감한 데이터를 위한 보안 암호화 금고.", "desc-qrcode": "즉각적인 고해상도 QR 코드 생성기.", "desc-mockup": "즉각적인 장치 프레임 및 현실적인 3D 프레젠테이션.", "desc-magiclight": "고급 가상 조명 제어 및 분위기 조정." },
-            it: { sub: "Elaborazione locale • Privacy totale", tagline: "I tuoi file non lasciano mai il tuo computer. Ecosistema integrato per la manipolazione di file.", access: "Accedi all'app", support: "Sostieni il progetto", contact: "Contatti", "desc-pdf": "Ottimizzazione, unione e manipolazione di file PDF in pochi secondi.", "desc-docx": "Conversione intelligente ed editing di documenti Word con precisione.", "desc-jpg": "Elaborazione JPG avanzata con algoritmi di compressione lossless.", "desc-webm": "Conversione video nel formato WebM ottimizzato per il web moderno.", "desc-webp": "Converti immagini in WebP per massime prestazioni di caricamento.", "desc-hdr": "Elaborazione HDR intelligente per foto e immagini.", "desc-magicpdf": "Ricostruzione ed estrazione intelligente di layout PDF complessi.", "desc-safe": "Cassaforte di crittografia sicura per i tuoi dati più sensibili.", "desc-qrcode": "Generatore istantaneo di codici QR ad alta risoluzione.", "desc-mockup": "Cornici di dispositivi istantanee e presentazioni 3D realistiche.", "desc-magiclight": "Controllo avanzato dell'illuminazione virtuale e regolazioni atmosferiche." },
-            ru: { sub: "Локальная обработка • Полная конфиденциальность", tagline: "Ваши файлы никогда не покидают ваш компьютер. Экосистема для пакетной обработки файлов.", access: "Открыть приложение", support: "Поддержать проект", contact: "Контакты", "desc-pdf": "Оптимизация, объединение и манипулирование PDF-файлами за секунды.", "desc-docx": "Интеллектуальное преобразование и редактирование документов Word.", "desc-jpg": "Улучшенная обработка JPG с алгоритмами сжатия без потерь.", "desc-webm": "Конвертация видео в формат WebM, оптимизированный для веба.", "desc-webp": "Конвертируйте изображения в WebP для максимальной скорости загрузки.", "desc-hdr": "Интеллектуальная обработка HDR для фотографий и изображений.", "desc-magicpdf": "Реконструкция и интеллектуальное извлечение сложных PDF-макетов.", "desc-safe": "Надежное хранилище шифрования для ваших самых важных данных.", "desc-qrcode": "Мгновенный генератор QR-кодов высокого разрешения.", "desc-mockup": "Мгновенные рамки устройств и реалистичные 3D-презентации.", "desc-magiclight": "Расширенное управление виртуальным освещением и атмосферные настройки." }
+            en: { sub: "Local Processing • Total Privacy", tagline: "Your files never leave your computer. High-performance integrated ecosystem for batch file manipulation.", access: "Access App", support: "Support the Project", pix: "Copy PIX Key", copied: "PIX Key Copied!", contact: "Contact", shareMsg: "Check out Strauz Tools: High-performance ecosystem for files. Total privacy. Access: ", comm: "messenger", "desc-pdf": "Optimization, merging, and manipulation of PDF files in seconds.", "desc-docx": "Intelligent conversion and Word document editing with surgical precision.", "desc-jpg": "Advanced JPG processing with lossless compression algorithms.", "desc-webm": "Video conversion to WebM format optimized for the modern web.", "desc-webp": "Convert images to WebP for maximum loading performance.", "desc-hdr": "Intelligent High Dynamic Range processing for photos and images.", "desc-magicpdf": "Reconstruction and intelligent extraction of complex PDF layouts.", "desc-safe": "Secure encryption vault for your most sensitive data.", "desc-qrcode": "Instant high-resolution QR Code generator.", "desc-mockup": "Instant device frames and realistic 3D presentations.", "desc-magiclight": "Advanced virtual lighting control and atmospheric adjustments." },
+            pt: { sub: "Processamento Local • Privacidade Total", tagline: "Seus arquivos nunca saem do seu computador. Ecossistema integrado para manipulação de arquivos em lote.", access: "Acessar App", support: "Copiar Chave PIX", pix: "Copiar Chave PIX", copied: "Chave PIX Copiada!", contact: "Contato", shareMsg: "Conheça o Strauz Tools: Ecossistema de alta performance para arquivos. Privacidade total. Acesse: ", comm: "whatsapp", "desc-pdf": "Otimização, junção e manipulação de arquivos PDF em segundos.", "desc-docx": "Conversão inteligente e edição de documentos Word com precisão cirúrgica.", "desc-jpg": "Processamento avançado de imagens JPG com compressão sem perda.", "desc-webm": "Conversão de vídeos para o formato WebM otimizado para a web.", "desc-webp": "Converta suas imagens para WebP e ganhe performance máxima.", "desc-hdr": "Processamento inteligente HDR para fotos e imagens estáticas.", "desc-magicpdf": "Reconstrução e extração inteligente de layouts PDF complexos.", "desc-safe": "Cofre de criptografia seguro para seus dados mais sensíveis.", "desc-qrcode": "Gerador instantâneo de QR Code em alta resolução.", "desc-mockup": "Molduras de dispositivos e apresentações 3D realistas.", "desc-magiclight": "Controle avançado de iluminação virtual e ajustes atmosféricos." },
+            zh: { sub: "本地处理 • 完全隐私", tagline: "您的文件永远不会离开您的计算机。用于批量文件操作的高性能集成生态系统。", access: "访问应用", support: "支持项目", contact: "联系方式", shareMsg: "查看 Strauz Tools：高性能文件生态系统。完全隐私。访问： ", comm: "wechat", "desc-pdf": "几秒钟内优化、合并和处理 PDF 文件。", "desc-docx": "以极高的精度进行智能转换和 Word 文档编辑。", "desc-jpg": "采用无损压缩算法的高级 JPG 处理。", "desc-webm": "针对现代网络优化的 WebM 格式视频转换。", "desc-webp": "将图像转换为 WebP 以获得最佳加载性能。", "desc-hdr": "照片和图像的智能高动态范围处理。", "desc-magicpdf": "复杂 PDF 布局的重构和智能提取。", "desc-safe": "保护您最敏感数据的安全加密库。", "desc-qrcode": "即时高分辨率 QR 码生成器。", "desc-mockup": "即时设备框架和逼真的 3D 演示。", "desc-magiclight": "高级虚拟照明控制和大气调整。" },
+            de: { sub: "Lokale Verarbeitung • Volle Privatsphäre", tagline: "Ihre Dateien verlassen niemals Ihren Computer. Hochleistungs-Ökosystem für die Stapelverarbeitung.", access: "App öffnen", support: "Projekt unterstützen", contact: "Kontakt", shareMsg: "Entdecken Sie Strauz Tools: Hochleistungs-Ökosystem für Dateien. Volle Privatsphäre. Zugriff: ", comm: "whatsapp", "desc-pdf": "Optimierung, Zusammenführung und Bearbeitung von PDF-Dateien in Sekunden.", "desc-docx": "Intelligente Konvertierung und Bearbeitung von Word-Dokumenten.", "desc-jpg": "Fortschrittliche JPG-Verarbeitung mit verlustfreien Algorithmen.", "desc-webm": "Videokonvertierung in das für das Web optimierte WebM-Format.", "desc-webp": "Bilder in WebP konvertieren für maximale Ladeleistung.", "desc-hdr": "Intelligente HDR-Verarbeitung für Fotos und Bilder.", "desc-magicpdf": "Rekonstruktion und intelligente Extraktion komplexer PDF-Layouts.", "desc-safe": "Sicherer Verschlüsselungstresor für Ihre sensibelsten Daten.", "desc-qrcode": "Sofortiger hochauflösender QR-Code-Generator.", "desc-mockup": "Sofortige Geräterahmen und realistische 3D-Präsentationen.", "desc-magiclight": "Erweiterte virtuelle Beleuchtungssteuerung und atmosphärische Anpassungen." },
+            ja: { sub: "ローカル処理 • 完全なプライバシー", tagline: "ファイルがコンピュータから離れることはありません。バッチ処理用の高性能統合エコシステム。", access: "アプリにアクセス", support: "プロジェクトを支援", contact: "お問い合わせ", shareMsg: "Strauz Toolsをチェック：ファイル用の高性能エコシステム。完全なプライバシー。アクセス： ", comm: "line", "desc-pdf": "PDFファイルの最適化、結合、操作を数秒で。", "desc-docx": "外科的精度でのインテリジェントな変換とWordドキュメントの編集。", "desc-jpg": "ロスレス圧縮アルゴリズムによる高度なJPG処理。", "desc-webm": "最新のウェブ向けに最適化されたWebM形式へのビデオ変換。", "desc-webp": "読み込みパフォーマンスを最大化するために画像をWebPに変換します。", "desc-hdr": "写真や画像のためのインテリジェントなHDR処理。", "desc-magicpdf": "複雑なPDFレイアウトの再構築とインテリジェントな抽出。", "desc-safe": "最も機密性の高いデータのための安全な暗号化保管庫。", "desc-qrcode": "瞬時の高解像度QRコードジェネレーター。", "desc-mockup": "瞬時のデバイスフレームとリアルな3Dプレゼンテーション。", "desc-magiclight": "高度な仮想照明制御と大気の調整。" },
+            fr: { sub: "Traitement local • Confidentialité totale", tagline: "Vos fichiers ne quittent jamais votre ordinateur. Écosystème intégré pour la manipulation de fichiers.", access: "Accéder à l'app", support: "Soutenir le projet", contact: "Contact", shareMsg: "Découvrez Strauz Tools : Écosystème haute performance pour fichiers. Confidentialité totale. Accès : ", comm: "messenger", "desc-pdf": "Optimisation, fusion et manipulation de fichiers PDF en quelques secondes.", "desc-docx": "Conversion intelligente et édition de documents Word avec précision.", "desc-jpg": "Traitement JPG avancé avec algorithmes de compression sans perte.", "desc-webm": "Conversion vidéo au format WebM optimisé pour le web moderne.", "desc-webp": "Convertissez des images en WebP pour une performance maximale.", "desc-hdr": "Traitement HDR intelligent pour les photos et les images.", "desc-magicpdf": "Reconstruction et extraction intelligente de mises en page PDF complexes.", "desc-safe": "Coffre-fort de chiffrement sécurisé pour vos données sensibles.", "desc-qrcode": "Générateur de QR Code haute résolution instantané.", "desc-mockup": "Cadres d'appareils instantanés et présentations 3D réalistes.", "desc-magiclight": "Contrôle avancé de l'éclairage virtuel et ajustements atmosphériques." },
+            es: { sub: "Procesamiento local • Privacidad total", tagline: "Sus archivos nunca salen de su computadora. Ecosistema integrado para manipulación de archivos.", access: "Acceder a la aplicación", support: "Apoyar el proyecto", contact: "Contacto", shareMsg: "Descubre Strauz Tools: Ecosistema de alto rendimiento para archivos. Privacidad total. Acceder: ", comm: "whatsapp", "desc-pdf": "Optimización, combinación y manipulación de archivos PDF en segundos.", "desc-docx": "Conversión inteligente y edición de documentos Word con precisión.", "desc-jpg": "Procesamiento JPG avanzado con algoritmos de compresión sin pérdida.", "desc-webm": "Conversión de video al formato WebM optimizado para la web moderna.", "desc-webp": "Convierta imágenes a WebP para un rendimiento de carga máximo.", "desc-hdr": "Procesamiento inteligente de alto rango dinámico para fotos e imágenes.", "desc-magicpdf": "Reconstrucción y extracción inteligente de diseños PDF complejos.", "desc-safe": "Bóveda de cifrado segura para sus datos más sensibles.", "desc-qrcode": "Generador instantáneo de códigos QR de alta resolución.", "desc-mockup": "Marcos de dispositivos instantáneos y presentaciones 3D realistas.", "desc-magiclight": "Control avanzado de iluminación virtual y ajustes atmosféricos." },
+            ko: { sub: "로컬 처리 • 완전한 개인 정보 보호", tagline: "파일이 컴퓨터를 떠나지 않습니다. 일괄 파일 조작을 위한 고성능 통합 에코시스템.", access: "앱 접속", support: "프로젝트 지원", contact: "문의하기", shareMsg: "Strauz Tools 확인: 파일을 위한 고성능 에코시스템. 완전한 개인 정보 보호. 접속: ", comm: "kakao", "desc-pdf": "몇 초 만에 PDF 파일 최적화, 병합 및 조작.", "desc-docx": "정밀한 지능형 변환 및 Word 문서 편집.", "desc-jpg": "무손실 압축 알고리즘을 사용한 고급 JPG 처리.", "desc-webm": "현대 웹에 최적화된 WebM 형식으로 비디오 변환.", "desc-webp": "최대 로딩 성능을 위해 이미지를 WebP로 변환합니다.", "desc-hdr": "사진 및 이미지를 위한 지능형 고다이나믹 레인지 처리.", "desc-magicpdf": "복잡한 PDF 레이아웃의 재구성 및 지능형 추출.", "desc-safe": "가장 민감한 데이터를 위한 보안 암호화 금고.", "desc-qrcode": "즉각적인 고해상도 QR 코드 생성기.", "desc-mockup": "즉각적인 장치 프레임 및 현실적인 3D 프레젠테이션.", "desc-magiclight": "고급 가상 조명 제어 및 분위기 조정." },
+            it: { sub: "Elaborazione locale • Privacy totale", tagline: "I tuoi file non lasciano mai il tuo computer. Ecosistema integrato per la manipolazione di file.", access: "Accedi all'app", support: "Sostieni il progetto", contact: "Contatti", shareMsg: "Scopri Strauz Tools: Ecosistema ad alte prestazioni per file. Privacy totale. Accesso: ", comm: "whatsapp", "desc-pdf": "Ottimizzazione, unione e manipolazione di file PDF in pochi secondi.", "desc-docx": "Conversione intelligente ed editing di documenti Word con precisione.", "desc-jpg": "Elaborazione JPG avanzata con algoritmi di compressione lossless.", "desc-webm": "Conversione video nel formato WebM ottimizzato per il web moderno.", "desc-webp": "Converti immagini in WebP per massime prestazioni di caricamento.", "desc-hdr": "Elaborazione HDR intelligente per foto e immagini.", "desc-magicpdf": "Ricostruzione ed estrazione intelligente di layout PDF complessi.", "desc-safe": "Cassaforte di crittografia sicura per i tuoi dati più sensibili.", "desc-qrcode": "Generatore istantaneo di codici QR ad alta risoluzione.", "desc-mockup": "Cornici di dispositivi istantanee e presentazioni 3D realistiche.", "desc-magiclight": "Controllo avanzato dell'illuminazione virtuale e regolazioni atmosferiche." },
+            ru: { sub: "Локальная обработка • Полная конфиденциальность", tagline: "Ваши файлы никогда не покидают ваш компьютер. Экосистема для пакетной обработки файлов.", access: "Открыть приложение", support: "Поддержать проект", contact: "Контакты", shareMsg: "Попробуйте Strauz Tools: Высокопроизводительная экосистема для файлов. Полная конфиденциальность. Доступ: ", comm: "telegram", "desc-pdf": "Оптимизация, объединение и манипулирование PDF-файлами за секунды.", "desc-docx": "Интеллектуальное преобразование и редактирование документов Word.", "desc-jpg": "Улучшенная обработка JPG с алгоритмами сжатия без потерь.", "desc-webm": "Конвертация видео в формат WebM, оптимизированный для веба.", "desc-webp": "Конвертируйте изображения в WebP для максимальной скорости загрузки.", "desc-hdr": "Интеллектуальная обработка HDR для фотографий и изображений.", "desc-magicpdf": "Реконструкция и интеллектуальное извлечение сложных PDF-макетов.", "desc-safe": "Надежное хранилище шифрования для ваших самых важных данных.", "desc-qrcode": "Мгновенный генератор QR-кодов высокого разрешения.", "desc-mockup": "Мгновенные рамки устройств и реалистичные 3D-презентации.", "desc-magiclight": "Расширенное управление виртуальным освещением и атмосферные настройки." }
         };
 
         function updateLanguage() {
             const lang = document.getElementById('langSelect').value;
             const t = translations[lang] || translations.en;
             
+            // Texto e Título
             document.getElementById('subheadline').innerText = t.sub;
             document.getElementById('mainTagline').innerText = t.tagline;
             document.getElementById('mainActionBtn').innerText = t.support;
             document.getElementById('contactLink').innerText = t.contact;
+            document.getElementById('modalTitle').innerText = lang === 'pt' ? 'Apoie o Strauz Tools' : 'Support Strauz Tools';
             
+            // Lógica do Botão
+            const btnComm = document.getElementById('commBtn');
+            const commType = t.comm;
+            const config = commConfig[commType];
+            
+            // Detector de Mobile
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            btnComm.style.backgroundColor = config.color;
+            btnComm.innerHTML = `<svg class="comm-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="${config.path}"/></svg>`;
+            
+            // Remove classes antigas e adiciona se necessário (ex: kakao)
+            btnComm.className = 'btn-float-comm';
+            if(commType === 'kakao') btnComm.classList.add('kakao');
+            
+            // Tradução dos Cards
             document.querySelectorAll('[data-key]').forEach(el => {
                 const key = el.getAttribute('data-key');
-                if (t[key]) {
-                    el.innerText = t[key];
-                }
+                if (t[key]) el.innerText = t[key];
             });
+            
+            // Texto de Compartilhamento URL Encoded
+            const url = "https://strauzenbberg.github.io/vexatools";
+            const shareText = encodeURIComponent(t.shareMsg + " " + url);
+            
+            // --- LÓGICA DE DIRECIONAMENTO HÍBRIDA ---
+            
+            if(commType === 'whatsapp') {
+                // Universal Link: Abre app no mobile e Web no Desktop
+                btnComm.href = `https://api.whatsapp.com/send?text=${shareText}`;
+            } 
+            else if(commType === 'telegram') {
+                // Universal Link: Abre app no mobile e Web no Desktop
+                btnComm.href = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(t.shareMsg)}`;
+            } 
+            else if(commType === 'line') {
+                if (isMobile) {
+                    // Mobile: Abre App
+                    btnComm.href = `line://msg/text/${shareText}`;
+                } else {
+                    // Desktop: Share Web
+                    btnComm.href = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(url)}`;
+                }
+            } 
+            else if(commType === 'messenger') {
+                if (isMobile) {
+                    // Mobile: Abre App (Se instalado) ou loja
+                    btnComm.href = `fb-messenger://share/?link=${encodeURIComponent(url)}`;
+                } else {
+                    // Desktop: Web Dialog
+                    btnComm.href = `http://www.facebook.com/dialog/send?app_id=521270401588372&link=${encodeURIComponent(url)}&redirect_uri=${encodeURIComponent(url)}`;
+                }
+            } 
+            else if(commType === 'wechat') {
+                if (isMobile) {
+                    // Mobile: Tenta abrir App Scheme
+                    btnComm.href = 'weixin://';
+                } else {
+                    // Desktop: Página Oficial
+                    btnComm.href = 'https://www.wechat.com/';
+                }
+            } 
+            else if(commType === 'kakao') {
+                if (isMobile) {
+                    // Mobile: Tenta abrir App Scheme
+                    btnComm.href = 'kakaotalk://';
+                } else {
+                    // Desktop: Página Oficial
+                    btnComm.href = 'https://www.kakaocorp.com/page/service/service/KakaoTalk';
+                }
+            }
         }
 
         function handleDonationAction() {
@@ -331,6 +474,9 @@
                 card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
             });
         });
+
+        // Inicializa com Português
+        updateLanguage();
     </script>
 </body>
 </html>
