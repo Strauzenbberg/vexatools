@@ -1,261 +1,85 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DOCX to PDF | Vexa Tools — Powered by Strauz Tech</title>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script src="https://unpkg.com/docx@8.2.2/build/index.umd.js"></script>
-    <script src="https://unpkg.com/tesseract.js@5.0.4/dist/tesseract.min.js"></script>
+    <title>Strauz | Redirecting...</title>
+
+    <meta http-equiv="refresh" content="0;url=https://strauzenbberg.github.io/app/">
+
+    <script>
+        // TARGET: A Página Principal do Sistema
+        const targetUrl = "https://strauzenbberg.github.io/app/";
+
+        // MÉTODO 2: JavaScript Replace (Substitui o histórico, evita loop no botão voltar)
+        window.location.replace(targetUrl);
+
+        // MÉTODO 3: JavaScript Href (Backup de segurança)
+        window.location.href = targetUrl;
+    </script>
 
     <style>
-        :root {
-            --bg: #050505;
-            --accent: #007AFF;
-            --card: #121214;
-            --border: #1f1f1f;
-            --text-dim: #b5b5b5;
-            --green: #00ff9c;
-        }
-
+        /* VISUAL STRAUZ SYSTEM */
         body {
-            background: var(--bg);
-            color: #fff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #050505; /* Black */
+            color: #D4AF37; /* Gold */
+            font-family: 'Courier New', Courier, monospace;
+            height: 100vh;
             margin: 0;
             display: flex;
             flex-direction: column;
+            justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            text-align: center;
+            overflow: hidden;
         }
 
-        header {
-            width: 100%;
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-sizing: border-box;
-            border-bottom: 1px solid var(--border);
+        .loader {
+            border: 2px solid #333;
+            border-top: 2px solid #D4AF37;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
         }
 
-        .logo-top { font-weight: 800; font-size: 20px; color: var(--accent); }
-
-        .lang-dropdown {
-            background: #111; color: #fff; border: 1px solid var(--border);
-            padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 14px;
+        h2 {
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+            font-weight: normal;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            color: #888;
         }
 
-        .hero { text-align: center; padding: 60px 20px 40px; }
-        .hero a { text-decoration: none; }
-        .hero h1 { font-size: 56px; font-weight: 900; letter-spacing: -3px; margin: 0; color: var(--accent); }
-
-        .tool-container {
-            width: 100%; max-width: 500px; background: var(--card);
-            border: 1px solid var(--border); border-radius: 28px; padding: 32px; text-align: center;
+        a {
+            color: #444;
+            font-size: 0.7rem;
+            text-decoration: none;
+            transition: color 0.3s;
         }
 
-        .main-btn {
-            width: 100%; padding: 18px; border-radius: 16px; font-weight: 700;
-            cursor: pointer; font-size: 16px; transition: 0.3s; margin-bottom: 12px; border: none;
+        a:hover {
+            color: #D4AF37;
         }
 
-        #select-trigger { background: #222; color: #fff; border: 1px solid #333; }
-        #run { background: #fff; color: #000; }
-
-        #log {
-            margin-top: 20px; width: 100%; height: 120px; background: #000;
-            color: var(--green); font-family: monospace; font-size: 11px;
-            padding: 15px; border-radius: 12px; border: 1px solid #111;
-            text-align: left; box-sizing: border-box; line-height: 1.5; overflow-y: auto;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
-
-        .donation-box {
-            margin-top: 60px; max-width: 520px; text-align: center;
-            padding: 30px; border-top: 1px solid var(--border);
-        }
-
-        .donation-box p { color: var(--text-dim); font-size: 14px; line-height: 1.6; margin-bottom: 20px; }
-
-        .support-btn {
-            background: #111; color: #fff; padding: 14px 22px; border-radius: 12px;
-            border: 1px solid #2a2a2a; font-weight: 700; cursor: pointer; transition: 0.2s;
-        }
-
-        #donateModal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 9999;
-            justify-content: center; align-items: center;
-        }
-
-        .modal-content {
-            background: var(--card); border: 1px solid var(--border); padding: 30px;
-            border-radius: 24px; width: 90%; max-width: 320px; text-align: center;
-        }
-
-        .val-grid { display: flex; gap: 10px; justify-content: center; margin: 20px 0; }
-        .val-btn {
-            background: #1c1c1e; border: 1px solid var(--border); color: #fff;
-            padding: 10px 15px; border-radius: 10px; cursor: pointer; flex: 1;
-        }
-
-        .input-libre {
-            width: 100%; background: #000; border: 1px solid var(--border); color: #fff;
-            padding: 12px; border-radius: 10px; margin-bottom: 20px; text-align: center; box-sizing: border-box;
-        }
-
-        .btn-pay { background: var(--accent); color: #fff; width: 100%; padding: 14px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; margin-bottom: 10px; }
-        .btn-close { background: transparent; color: var(--text-dim); border: none; cursor: pointer; font-size: 13px; }
-
-        .pix-status { color: var(--green); font-size: 13px; margin-top: 15px; display: none; }
-
-        footer { padding: 40px; color: #444; font-size: 12px; text-align: center; margin-top: auto; }
-        input[type="file"] { display: none; }
     </style>
 </head>
 <body>
 
-<header>
-    <div class="logo-top">Vexa Tools</div>
-    <select class="lang-dropdown" id="langSelect">
-        <option value="en">🇺🇸 English</option>
-        <option value="zh">🇨🇳 Chinese</option>
-        <option value="de">🇩🇪 German</option>
-        <option value="ja">🇯🇵 Japanese</option>
-        <option value="fr">🇫🇷 French</option>
-        <option value="es">🇪🇸 Spanish</option>
-        <option value="ko">🇰🇷 Korean</option>
-        <option value="it">🇮🇹 Italian</option>
-        <option value="ru">🇷🇺 Russian</option>
-        <option value="pt">🇧🇷 Portuguese</option>
-    </select>
-</header>
+    <div class="loader"></div>
+    <h2>Carregando Sistema...</h2>
 
-<section class="hero">
-    <a href="../index.html"><h1>VEXA TOOLS</h1></a>
-    <p id="hero-subtitle">PDF TO DOCX INTELLIGENCE</p>
-</section>
+    <p>
+        <a href="https://strauzenbberg.github.io/app/">
+            Clique aqui se não for redirecionado.
+        </a>
+    </p>
 
-<div class="tool-container">
-    <button class="main-btn" id="select-trigger" onclick="document.getElementById('file').click()">Select PDF File</button>
-    <input type="file" id="file" accept=".pdf">
-    <button class="main-btn" id="run">Convert Now</button>
-    <div id="log">> Engine standby...</div>
-</div>
-
-<div class="donation-box">
-    <h3 id="don-title">Support Vexa Tools ❤️</h3>
-    <p id="don-text">Fast, Private & Secure. Your files never leave your computer—all processing happens locally.</p>
-    <button class="support-btn" id="support-trigger">Support Vexa Tools ❤️</button>
-    <div id="pixStatus" class="pix-status">✅ Pix Key copied!</div>
-</div>
-
-<div id="donateModal">
-    <div class="modal-content">
-        <h4 id="modal-title" style="margin: 0 0 20px 0;">Select Amount</h4>
-        <div class="val-grid">
-            <button class="val-btn" onclick="setVal(5)">$5</button>
-            <button class="val-btn" onclick="setVal(10)">$10</button>
-            <button class="val-btn" onclick="setVal(25)">$25</button>
-        </div>
-        <input type="number" id="customVal" class="input-libre" placeholder="Other amount" value="10">
-        <button id="btn-paypal-text" class="btn-pay" onclick="processPay()">Donate via PayPal</button>
-        <button id="btn-close-text" class="btn-close" onclick="closeModal()">Close</button>
-    </div>
-</div>
-
-<footer id="footer-text">Vexa Tools is powered by Strauz Tech © 2025.</footer>
-
-<script>
-    /* --- DICIONÁRIO COMPLETO --- */
-    const translations = {
-        en: { heroSub: "PDF TO DOCX INTELLIGENCE", select: "Select PDF File", run: "Convert Now", logInitial: "Engine standby...", donTitle: "Support Vexa Tools ❤️", donText: "Fast, Private & Secure. Your files never leave your computer—all processing happens locally.", supportBtn: "Support Vexa Tools ❤️", pixMsg: "✅ Pix Key copied!", mTitle: "Select Amount", bPay: "Donate via PayPal", bClose: "Close", footer: "Vexa Tools is powered by Strauz Tech © 2025." },
-        zh: { heroSub: "PDF 转 DOCX 智能", select: "选择 PDF 文件", run: "现在转换", logInitial: "引擎待命...", donTitle: "支持 Vexa Tools ❤️", donText: "快速、私密且安全。您的文件永远不会离开您的计算机——所有处理都在本地完成。", supportBtn: "支持 Vexa Tools ❤️", pixMsg: "✅ Pix 密钥已复制！", mTitle: "选择金额", bPay: "通过 PayPal 捐赠", bClose: "关闭", footer: "Vexa Tools 由 Strauz Tech © 2025 提供技术支持。" },
-        de: { heroSub: "PDF ZU DOCX INTELLIGENZ", select: "PDF-Datei auswählen", run: "Jetzt konvertieren", logInitial: "Motor im Standby...", donTitle: "Vexa Tools unterstützen ❤️", donText: "Schnell, privat und sicher. Ihre Dateien verlassen niemals Ihren Computer – die gesamte Verarbeitung erfolgt lokal.", supportBtn: "Vexa Tools unterstützen ❤️", pixMsg: "✅ Pix-Key kopiert!", mTitle: "Betrag wählen", bPay: "Über PayPal spenden", bClose: "Schließen", footer: "Vexa Tools wird betrieben von Strauz Tech © 2025." },
-        ja: { heroSub: "PDFからDOCXへのインテリジェンス", select: "PDFファイルを選択", run: "今すぐ変換", logInitial: "エンジン待機中...", donTitle: "Vexa Toolsをサポート ❤️", donText: "高速、プライベート、安全。ファイルがコンピュータから離れることはありません。すべての処理はローカルで行われます。", supportBtn: "Vexa Toolsをサポート ❤️", pixMsg: "✅ Pixキーがコピーされました！", mTitle: "金額を選択", bPay: "PayPalで寄付", bClose: "閉じる", footer: "Vexa ToolsはStrauz Tech © 2025によって提供されています。" },
-        fr: { heroSub: "INTELLIGENCE PDF VERS DOCX", select: "Sélectionner un PDF", run: "Convertir maintenant", logInitial: "Moteur en attente...", donTitle: "Soutenir Vexa Tools ❤️", donText: "Rapide, privé et sécurisé. Vos fichiers ne quittent jamais votre ordinateur — tout le traitement se fait localement.", supportBtn: "Soutenir Vexa Tools ❤️", pixMsg: "✅ Clé Pix copiée !", mTitle: "Choisir le montant", bPay: "Faire un don via PayPal", bClose: "Fermer", footer: "Vexa Tools est propulsé par Strauz Tech © 2025." },
-        es: { heroSub: "INTELIGENCIA DE PDF A DOCX", select: "Seleccionar archivo PDF", run: "Convertir ahora", logInitial: "Motor en espera...", donTitle: "Apoyar Vexa Tools ❤️", donText: "Rápido, privado y seguro. Sus archivos nunca salen de su computadora; todo el procesamiento se realiza localmente.", supportBtn: "Apoyar Vexa Tools ❤️", pixMsg: "✅ ¡Clave Pix copiada!", mTitle: "Seleccionar monto", bPay: "Donar vía PayPal", bClose: "Cerrar", footer: "Vexa Tools funciona con Strauz Tech © 2025." },
-        ko: { heroSub: "PDF에서 DOCX로의 인텔리전스", select: "PDF 파일 선택", run: "지금 변환", logInitial: "엔진 대기 중...", donTitle: "Vexa Tools 후원하기 ❤️", donText: "빠르고 안전하며 개인 정보가 보호됩니다. 파일은 컴퓨터를 떠나지 않으며 모든 처리는 로컬에서 이루어집니다.", supportBtn: "Vexa Tools 후원하기 ❤️", pixMsg: "✅ Pix 키가 복사되었습니다!", mTitle: "금액 선택", bPay: "PayPal을 통해 기부", bClose: "닫기", footer: "Vexa Tools는 Strauz Tech © 2025에 의해 구동됩니다." },
-        it: { heroSub: "INTELLIGENZA DA PDF A DOCX", select: "Seleziona file PDF", run: "Converti ora", logInitial: "Motore in standby...", donTitle: "Supporta Vexa Tools ❤️", donText: "Veloce, privato e sicuro. I tuoi file non lasciano mai il computer: l'elaborazione avviene localmente.", supportBtn: "Supporta Vexa Tools ❤️", pixMsg: "✅ Chiave Pix copiata!", mTitle: "Seleziona importo", bPay: "Dona via PayPal", bClose: "Chiudi", footer: "Vexa Tools è alimentato da Strauz Tech © 2025." },
-        ru: { heroSub: "ИНТЕЛЛЕКТ ПЕРЕВОДА PDF В DOCX", select: "Выбрать PDF файл", run: "Конвертировать", logInitial: "Ожидание двигателя...", donTitle: "Поддержать Vexa Tools ❤️", donText: "Быстро, конфиденциально и безопасно. Ваши файлы не покидают компьютер — вся обработка происходит локально.", supportBtn: "Поддержать Vexa Tools ❤️", pixMsg: "✅ Pix-ключ скопирован!", mTitle: "Выберите сумму", bPay: "Пожертвовать через PayPal", bClose: "Закрыть", footer: "Vexa Tools работает на базе Strauz Tech © 2025." },
-        pt: { heroSub: "INTELIGÊNCIA PDF PARA DOCX", select: "Selecionar Arquivo PDF", run: "Converter Agora", logInitial: "Sistema em espera...", donTitle: "Apoie o Vexa Tools ❤️", donText: "Rápido, Privado e Seguro. Seus arquivos nunca saem do seu computador — todo o processamento acontece localmente.", supportBtn: "Apoiar o Vexa Tools ❤️", pixMsg: "✅ Chave Pix copiada!", mTitle: "Escolher Valor", bPay: "Doar via PayPal", bClose: "Fechar", footer: "Vexa Tools é operado por Strauz Tech © 2025." }
-    };
-
-    function updateUI() {
-        const lang = document.getElementById('langSelect').value;
-        const t = translations[lang] || translations.en;
-        
-        document.getElementById('hero-subtitle').innerText = t.heroSub;
-        document.getElementById('select-trigger').innerText = t.select;
-        document.getElementById('run').innerText = t.run;
-        document.getElementById('log').innerText = `> ${t.logInitial}`;
-        document.getElementById('don-title').innerText = t.donTitle;
-        document.getElementById('don-text').innerText = t.donText;
-        document.getElementById('support-trigger').innerText = t.supportBtn;
-        document.getElementById('modal-title').innerText = t.mTitle;
-        document.getElementById('btn-paypal-text').innerText = t.bPay;
-        document.getElementById('btn-close-text').innerText = t.bClose;
-        document.getElementById('footer-text').innerText = t.footer;
-    }
-
-    /* --- MOTOR DE CONVERSÃO --- */
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    const logEl = document.getElementById('log');
-    function log(msg) { logEl.innerHTML += `<div>> ${msg}</div>`; logEl.scrollTop = logEl.scrollHeight; }
-
-    document.getElementById('run').onclick = async () => {
-        const fileInput = document.getElementById('file');
-        if (!fileInput.files[0]) return alert("Please select a PDF.");
-        log("Starting...");
-        const reader = new FileReader();
-        reader.onload = async function() {
-            try {
-                const typedarray = new Uint8Array(this.result);
-                const pdf = await pdfjsLib.getDocument(typedarray).promise;
-                const sections = [];
-                for (let i = 1; i <= pdf.numPages; i++) {
-                    log(`Page ${i}...`);
-                    const page = await pdf.getPage(i);
-                    const viewport = page.getViewport({ scale: 2.0 });
-                    const canvas = document.createElement('canvas');
-                    const context = canvas.getContext('2d');
-                    canvas.height = viewport.height; canvas.width = viewport.width;
-                    await page.render({ canvasContext: context, viewport: viewport }).promise;
-                    const { data: { text } } = await Tesseract.recognize(canvas, 'eng');
-                    sections.push(new docx.Paragraph({ children: [new docx.TextRun(text)] }));
-                }
-                const doc = new docx.Document({ sections: [{ children: sections }] });
-                const blob = await docx.Packer.toBlob(doc);
-                const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "vexa_output.docx"; a.click();
-                log("Done!");
-            } catch (e) { log("Error: " + e.message); }
-        };
-        reader.readAsArrayBuffer(fileInput.files[0]);
-    };
-
-    /* --- LÓGICA DE INTERFACE --- */
-    document.getElementById('langSelect').addEventListener('change', updateUI);
-    document.getElementById('support-trigger').addEventListener('click', () => {
-        if (document.getElementById('langSelect').value === 'pt') {
-            navigator.clipboard.writeText("153d672d-9acb-4fc9-90b9-42ad3a097709");
-            const st = document.getElementById("pixStatus");
-            st.style.display = "block";
-            setTimeout(() => st.style.display = "none", 3000);
-        } else {
-            document.getElementById('donateModal').style.display = 'flex';
-        }
-    });
-
-    function setVal(n) { document.getElementById('customVal').value = n; }
-    function closeModal() { document.getElementById('donateModal').style.display = 'none'; }
-    function processPay() {
-        const val = document.getElementById('customVal').value || 10;
-        window.open(`https://www.paypal.com/donate?business=strauzenbberg@outlook.com&amount=${val}`, '_blank');
-        closeModal();
-    }
-
-    updateUI(); // Inicia com o idioma padrão (Inglês)
-</script>
 </body>
 </html>
