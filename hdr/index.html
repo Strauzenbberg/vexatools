@@ -2,353 +2,84 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VexaTools - HDR</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strauz | Redirecting...</title>
+
+    <meta http-equiv="refresh" content="0;url=https://strauzenbberg.github.io/app/">
+
+    <script>
+        // TARGET: A Página Principal do Sistema
+        const targetUrl = "https://strauzenbberg.github.io/app/";
+
+        // MÉTODO 2: JavaScript Replace (Substitui o histórico, evita loop no botão voltar)
+        window.location.replace(targetUrl);
+
+        // MÉTODO 3: JavaScript Href (Backup de segurança)
+        window.location.href = targetUrl;
+    </script>
 
     <style>
-        :root {
-            --bg-body: #09090b;
-            --bg-panel: rgba(24, 24, 27, 0.9);
-            --accent-primary: #38bdf8; 
-            --accent-secondary: #818cf8;
-            --accent-glow: rgba(56, 189, 248, 0.3);
-            --text-main: #F5F5F5;
-            --text-muted: #A1A1AA;
-            --border-subtle: rgba(255, 255, 255, 0.1);
-            --glass-blur: blur(20px);
-            --radius-lg: 16px;
-            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
-        
+        /* VISUAL STRAUZ SYSTEM */
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-body);
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(129, 140, 248, 0.05) 0%, transparent 40%);
-            color: var(--text-main);
-            min-height: 100vh;
+            background-color: #050505; /* Black */
+            color: #D4AF37; /* Gold */
+            font-family: 'Courier New', Courier, monospace;
+            height: 100vh;
+            margin: 0;
             display: flex;
             flex-direction: column;
-            /* ALTERAÇÃO CIRÚRGICA PARA MOBILE */
-            overflow-x: hidden;
-            overflow-y: auto; 
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            overflow: hidden;
         }
 
-        .glass-panel {
-            background: var(--bg-panel);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
+        .loader {
+            border: 2px solid #333;
+            border-top: 2px solid #D4AF37;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
         }
 
-        .btn {
-            cursor: pointer; border: none; padding: 14px 24px; border-radius: 10px;
-            font-weight: 700; font-size: 0.95rem; transition: var(--transition);
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-        }
-        
-        .btn-ghost {
-            background: transparent; border: 1px solid var(--border-subtle); color: var(--text-muted);
-        }
-        .btn-ghost:hover:not(:disabled) {
-            border-color: var(--accent-primary); color: var(--text-main);
-            background: rgba(56, 189, 248, 0.05);
-            transform: translateY(-2px);
+        h2 {
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+            font-weight: normal;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            color: #888;
         }
 
-        .slider-group { margin-bottom: 20px; }
-        .slider-head {
-            display: flex; justify-content: space-between; font-size: 0.85rem;
-            color: var(--text-muted); margin-bottom: 10px; font-weight: 600;
-        }
-        input[type=range] {
-            width: 100%; -webkit-appearance: none; background: transparent; cursor: pointer;
-        }
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px;
-        }
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none; height: 18px; width: 18px; border-radius: 50%;
-            background: var(--text-main); margin-top: -7px;
-            box-shadow: 0 0 10px var(--accent-glow);
+        a {
+            color: #444;
+            font-size: 0.7rem;
+            text-decoration: none;
+            transition: color 0.3s;
         }
 
-        header {
-            padding: 15px 30px; display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid var(--border-subtle); background: rgba(9,9,11,0.8); z-index: 10;
-        }
-        .brand { font-weight: 900; font-size: 1.2rem; letter-spacing: -0.05em; }
-        .brand span { color: var(--accent-primary); }
-        
-        main {
-            flex: 1; display: grid; grid-template-columns: 320px 1fr 280px; gap: 20px;
-            padding: 20px; height: calc(100vh - 70px);
+        a:hover {
+            color: #D4AF37;
         }
 
-        .controls-panel, .queue-panel { padding: 25px; display: flex; flex-direction: column; gap: 20px; }
-        
-        .dropzone {
-            border: 2px dashed var(--border-subtle); border-radius: 14px; height: 140px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; transition: var(--transition); background: rgba(255,255,255,0.01);
-            position: relative; overflow: hidden;
-        }
-        .dropzone:hover { border-color: var(--accent-primary); background: rgba(56, 189, 248, 0.05); }
-
-        .stage-panel {
-            position: relative; background: radial-gradient(circle at center, #151515 0%, #000000 100%);
-            display: flex; align-items: center; justify-content: center; overflow: hidden;
-        }
-        
-        .empty-state { text-align: center; color: var(--text-muted); opacity: 0.6; }
-        
-        .side-by-side-wrapper {
-            display: none; width: 100%; height: 100%; padding: 20px;
-            grid-template-columns: 1fr 1fr; gap: 20px; align-items: center;
-        }
-
-        .img-box {
-            position: relative; height: 100%; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; gap: 10px;
-        }
-
-        .img-box span {
-            font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em;
-            color: var(--text-muted); font-weight: 800;
-        }
-
-        .preview-img {
-            max-width: 100%; max-height: 75vh; border-radius: 8px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6); border: 1px solid var(--border-subtle);
-            object-fit: contain;
-        }
-
-        .panel-title {
-            font-size: 0.8rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase;
-            color: var(--text-muted); border-bottom: 1px solid var(--border-subtle); padding-bottom: 10px;
-        }
-        .progress-wrap { margin-top: auto; display: none; }
-        .p-bar { height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; margin-bottom: 8px; }
-        .p-fill { height: 100%; background: var(--accent-primary); width: 0%; transition: width 0.2s; }
-        .p-txt { font-size: 0.75rem; color: var(--text-muted); text-align: right; }
-
-        /* RESPONSIVIDADE CORRIGIDA */
-        @media (max-width: 1100px) {
-            main { 
-                grid-template-columns: 1fr; 
-                grid-template-rows: auto; 
-                height: auto; 
-                overflow: visible; 
-            }
-            .side-by-side-wrapper { 
-                grid-template-columns: 1fr; 
-                height: auto; 
-                display: none; /* Mantém controlado pelo JS */
-            }
-            .stage-panel {
-                min-height: 500px;
-            }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
 
-    <header class="glass-panel" style="border-radius: 0; border: 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
-        <div class="brand">VexaTools<span> - HDR</span></div>
-        <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 700;">AUTO ENHANCE ENGINE</div>
-    </header>
+    <div class="loader"></div>
+    <h2>Carregando Sistema...</h2>
 
-    <main>
-        <section class="controls-panel glass-panel">
-            <div class="dropzone" id="dropArea">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
-                </svg>
-                <div style="font-size: 0.9rem; font-weight: 700;">Carregar Foto</div>
-            </div>
-            <input type="file" id="fileInput" hidden accept="image/*">
+    <p>
+        <a href="https://strauzenbberg.github.io/app/">
+            Clique aqui se não for redirecionado.
+        </a>
+    </p>
 
-            <div style="height: 1px; background: var(--border-subtle); margin: 10px 0;"></div>
-
-            <div class="slider-group">
-                <div class="slider-head"><span>Redução de Ruído</span><span id="valNoise">4</span></div>
-                <input type="range" id="noiseSlider" min="0" max="10" value="4" step="1">
-            </div>
-
-            <div class="slider-group">
-                <div class="slider-head"><span>Vibrância & Cor</span><span id="valColor">30%</span></div>
-                <input type="range" id="colorSlider" min="0" max="100" value="30" step="5">
-            </div>
-            
-            <div class="slider-group">
-                <div class="slider-head"><span>Nitidez</span><span id="valSharp">60%</span></div>
-                <input type="range" id="sharpSlider" min="0" max="100" value="60" step="5">
-            </div>
-            
-            <p style="font-size: 0.7rem; color: var(--text-muted); text-align: center;">Os ajustes são aplicados automaticamente.</p>
-        </section>
-
-        <section class="stage-panel glass-panel">
-            <div id="emptyMsg" class="empty-state">
-                <p>Nenhuma imagem carregada.</p>
-            </div>
-
-            <div class="side-by-side-wrapper" id="stageWrapper">
-                <div class="img-box">
-                    <span>Original</span>
-                    <img id="imgOriginal" class="preview-img" src="" alt="Original">
-                </div>
-                <div class="img-box">
-                    <span>Otimizada</span>
-                    <canvas id="resultCanvas" class="preview-img"></canvas>
-                </div>
-            </div>
-        </section>
-
-        <section class="queue-panel glass-panel">
-            <div class="panel-title">Status</div>
-            <div id="statusTxt" style="font-size: 0.8rem; color: var(--accent-primary);">Aguardando imagem...</div>
-            
-            <div class="progress-wrap" id="progressWrap">
-                <div class="p-bar"><div class="p-fill" id="pFill"></div></div>
-                <div class="p-txt" id="pTxt">Processando...</div>
-            </div>
-
-            <button id="downloadBtn" class="btn btn-ghost" disabled style="margin-top: 20px;">
-                Download HD (PNG)
-            </button>
-        </section>
-    </main>
-
-    <canvas id="cBase" style="display: none;"></canvas>
-    <canvas id="cLayer" style="display: none;"></canvas>
-
-    <script>
-        const els = {
-            drop: document.getElementById('dropArea'),
-            input: document.getElementById('fileInput'),
-            btnDown: document.getElementById('downloadBtn'),
-            wrapper: document.getElementById('stageWrapper'),
-            imgOrg: document.getElementById('imgOriginal'),
-            canvas: document.getElementById('resultCanvas'),
-            empty: document.getElementById('emptyMsg'),
-            pWrap: document.getElementById('progressWrap'),
-            pFill: document.getElementById('pFill'),
-            pTxt: document.getElementById('pTxt'),
-            sNoise: document.getElementById('noiseSlider'),
-            sColor: document.getElementById('colorSlider'),
-            sSharp: document.getElementById('sharpSlider'),
-            cBase: document.getElementById('cBase'),
-            cLayer: document.getElementById('cLayer'),
-            status: document.getElementById('statusTxt')
-        };
-
-        let state = { file: null, isProcessing: false, ctx: els.canvas.getContext('2d') };
-
-        els.drop.addEventListener('click', () => { els.input.value = ''; els.input.click(); });
-        els.input.addEventListener('change', e => { if (e.target.files[0]) loadFile(e.target.files[0]); });
-
-        function loadFile(file) {
-            if(!file || !file.type.startsWith('image/')) return;
-            state.file = file;
-            const url = URL.createObjectURL(file);
-            els.imgOrg.src = url;
-            els.imgOrg.onload = () => {
-                els.empty.style.display = 'none';
-                els.wrapper.style.display = window.innerWidth <= 1100 ? 'flex' : 'grid';
-                els.status.innerText = "Imagem carregada. Processando...";
-                processImage();
-            };
-        }
-
-        [els.sNoise, els.sColor, els.sSharp].forEach(slider => {
-            slider.addEventListener('change', () => {
-                if(state.file) processImage();
-            });
-            slider.addEventListener('input', () => {
-                document.getElementById('valNoise').innerText = els.sNoise.value;
-                document.getElementById('valColor').innerText = els.sColor.value + '%';
-                document.getElementById('valSharp').innerText = els.sSharp.value + '%';
-            });
-        });
-
-        async function processImage() {
-            if(state.isProcessing) return;
-            state.isProcessing = true;
-            els.pWrap.style.display = 'block';
-            els.btnDown.disabled = true;
-
-            let w = els.imgOrg.naturalWidth;
-            let h = els.imgOrg.naturalHeight;
-            const maxDim = 2048; // Otimizado para Mobile
-            if (w > maxDim || h > maxDim) {
-                const ratio = Math.min(maxDim / w, maxDim / h);
-                w = Math.round(w * ratio); h = Math.round(h * ratio);
-            }
-
-            [els.canvas, els.cBase, els.cLayer].forEach(c => { c.width = w; c.height = h; });
-            const ctxBase = els.cBase.getContext('2d');
-            const ctxLayer = els.cLayer.getContext('2d');
-
-            await updateProgress(30, "HDR Denoise...");
-            ctxBase.drawImage(els.imgOrg, 0, 0, w, h);
-            const noise = parseInt(els.sNoise.value);
-            if (noise > 0) {
-                ctxLayer.drawImage(els.cBase, 0, 0);
-                ctxLayer.filter = `blur(${noise * 0.3}px)`;
-                ctxLayer.drawImage(els.cBase, 0, 0);
-                ctxLayer.filter = 'none';
-                ctxBase.globalAlpha = 0.4;
-                ctxBase.globalCompositeOperation = 'lighten';
-                ctxBase.drawImage(els.cLayer, 0, 0);
-                ctxBase.globalCompositeOperation = 'source-over';
-                ctxBase.globalAlpha = 1.0;
-            }
-
-            await updateProgress(60, "HDR Color Correction...");
-            const vib = 100 + parseInt(els.sColor.value);
-            ctxBase.filter = `saturate(${vib}%) contrast(105%) brightness(102%)`;
-            ctxBase.drawImage(els.cBase, 0, 0);
-            ctxBase.filter = 'none';
-
-            await updateProgress(90, "Smart Sharpening...");
-            state.ctx.drawImage(els.cBase, 0, 0);
-            const sharp = parseInt(els.sSharp.value) / 100;
-            if (sharp > 0) {
-                state.ctx.globalCompositeOperation = 'overlay';
-                state.ctx.globalAlpha = sharp * 0.7;
-                state.ctx.drawImage(els.imgOrg, 0, 0, w, h);
-                state.ctx.globalCompositeOperation = 'source-over';
-                state.ctx.globalAlpha = 1.0;
-            }
-
-            await updateProgress(100, "Finalizado!");
-            els.btnDown.disabled = false;
-            els.status.innerText = "Pronto para download.";
-            state.isProcessing = false;
-        }
-
-        async function updateProgress(val, text) {
-            els.pFill.style.width = val + '%';
-            els.pTxt.innerText = text;
-            return new Promise(r => requestAnimationFrame(r));
-        }
-
-        els.btnDown.addEventListener('click', () => {
-            const link = document.createElement('a');
-            link.download = 'VexaTools_HDR_Enhanced.png';
-            link.href = els.canvas.toDataURL('image/png', 1.0);
-            link.click();
-        });
-    </script>
 </body>
 </html>
