@@ -1,410 +1,58 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Strauz Magic Light | Lote Edition</title>
+    <title>Redirecionando | Strauz Tech</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
-
+    <meta http-equiv="refresh" content="0; url=https://strauz.vercel.app/">
+    
     <style>
-        /* * =========================================
-         * STRAUZ DESIGN SYSTEM - MAGIC LIGHT EDITION
-         * =========================================
-         */
-        :root {
-            --bg-dark: #0f0b15;
-            --bg-card: rgba(255, 255, 255, 0.05);
-            --bg-card-hover: rgba(255, 255, 255, 0.08);
-            --gradient-magic: linear-gradient(135deg, #FF00CC 0%, #333399 100%);
-            --accent: #FF00CC; 
-            --accent-glow: rgba(255, 0, 204, 0.5);
-            --text-main: #ffffff;
-            --text-muted: #a0a0b0;
-            --border: rgba(255, 255, 255, 0.15);
-            --radius: 24px;
-            --transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-            background-image: 
-                radial-gradient(circle at 20% 20%, rgba(51, 51, 153, 0.4), transparent 40%),
-                radial-gradient(circle at 80% 80%, rgba(255, 0, 204, 0.2), transparent 40%);
-        }
-
-        header { padding: 3rem 1.5rem; text-align: center; }
-        .brand { 
-            font-size: 2.5rem; 
-            margin-bottom: 0.5rem; 
-            text-shadow: 0 10px 30px rgba(0,0,0,0.5); 
-            font-family: 'Nunito', sans-serif; 
-            font-weight: 900;
-            background: linear-gradient(to right, #fff, #e0e0e0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .subtitle { font-size: 1.1rem; color: var(--text-muted); font-weight: 300; }
-
-        main {
-            flex: 1;
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1.5rem 4rem;
+            background-color: #000000; /* Fundo Preto Elite */
+            color: #ffffff;
+            font-family: system-ui, -apple-system, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 2.5rem;
-        }
-
-        .upload-zone {
-            width: 100%;
-            max-width: 650px;
-            height: 250px;
-            border: 2px dashed var(--border);
-            border-radius: var(--radius);
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            display: flex;
-            flex-direction: column;
             justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        .upload-zone:hover { border-color: var(--accent); background: var(--bg-card-hover); }
-
-        .upload-icon { font-size: 3rem; margin-bottom: 1rem; filter: drop-shadow(0 0 10px var(--accent-glow)); }
-        #fileInput { display: none; }
-
-        /* * =========================================
-         * ÁREA DE TRABALHO & STATUS (MODIFICADO)
-         * =========================================
-         */
-        .workspace {
-            display: none;
-            width: 100%;
-            flex-direction: column;
-            align-items: center;
-            gap: 2rem;
-            animation: popIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        /* Área de Status de Processamento */
-        .status-display {
+            height: 100vh;
+            margin: 0;
             text-align: center;
-            padding: 2rem;
-            background: rgba(0,0,0,0.3);
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            width: 100%;
-            max-width: 600px;
         }
-
-        .status-text {
-            font-family: 'Nunito', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: var(--text-main);
+        .loader {
+            border: 4px solid #333;
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
         }
-
-        .status-sub {
-            color: var(--accent);
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        /* Galeria de Resultados em Grid */
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            width: 100%;
-            margin-top: 1rem;
-        }
-
-        .gallery-item {
-            position: relative;
-            border-radius: var(--radius);
-            overflow: hidden;
-            background: #000;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: var(--transition);
-            aspect-ratio: 1; /* Mantém quadrados perfeitos na miniatura */
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        .gallery-item:hover { transform: translateY(-5px); border-color: var(--accent); }
-
-        .gallery-item canvas {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .download-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(0,0,0,0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: 0.3s ease;
-            backdrop-filter: blur(4px);
-        }
-
-        .gallery-item:hover .download-overlay { opacity: 1; }
-
-        .download-mini-btn {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
+        a {
+            color: #a1a1a1;
+            text-decoration: underline;
+            font-size: 0.9rem;
+            margin-top: 20px;
             cursor: pointer;
-            font-weight: 700;
-            font-size: 0.8rem;
-            box-shadow: 0 0 15px var(--accent-glow);
-        }
-
-        /* * =========================================
-         * CONTROLS & LOADER
-         * =========================================
-         */
-        .controls { display: flex; gap: 1rem; margin-top: 2rem; justify-content: center; }
-        .btn {
-            padding: 1rem 2.5rem;
-            border: none;
-            border-radius: 50px;
-            font-family: 'Nunito', sans-serif;
-            font-weight: 800;
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 1rem;
-        }
-        .btn-magic { background: var(--gradient-magic); color: white; box-shadow: 0 10px 30px var(--accent-glow); }
-        .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text-main); }
-
-        .loader-container { display: none; flex-direction: column; align-items: center; gap: 1.5rem; margin-bottom: 2rem; }
-        .magic-wand-loader { width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
-
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-
-        @media(max-width: 768px) {
-            .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
         }
     </style>
+
+    <script>
+        window.location.href = "https://strauz.vercel.app/";
+    </script>
 </head>
 <body>
 
-    <header>
-        <div class="brand">Strauz Magic Light</div>
-        <p class="subtitle">Lote Edition | Processamento em Massa</p>
-    </header>
+    <div class="loader"></div>
+    <h2>Acessando Strauz Tech...</h2>
+    
+    <p>
+        Se você não for redirecionado automaticamente,<br>
+        <a href="https://strauz.vercel.app/">clique aqui para acessar o novo ambiente.</a>
+    </p>
 
-    <main>
-        <div class="upload-zone" id="dropZone">
-            <div class="upload-icon">✨</div>
-            <div class="upload-text">Toque para selecionar múltiplas fotos</div>
-            <input type="file" id="fileInput" accept="image/png, image/jpeg, image/jpg" multiple>
-        </div>
-
-        <div class="loader-container" id="loader">
-            <div class="magic-wand-loader"></div>
-        </div>
-
-        <div class="workspace" id="workspace">
-            <div class="status-display" id="statusDisplay">
-                <div class="status-text" id="mainStatus">Preparando...</div>
-                <div class="status-sub" id="subStatus">Aguardando início</div>
-            </div>
-
-            <div class="gallery-grid" id="galleryGrid">
-                </div>
-
-            <div class="controls" id="finalControls" style="display: none;">
-                <button class="btn btn-outline" id="resetBtn">Novo Lote</button>
-                <div style="font-size: 0.8rem; opacity: 0.7; align-self: center;">*Baixe as imagens clicando nelas</div>
-            </div>
-        </div>
-    </main>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const dropZone = document.getElementById('dropZone');
-            const fileInput = document.getElementById('fileInput');
-            const loader = document.getElementById('loader');
-            const workspace = document.getElementById('workspace');
-            const galleryGrid = document.getElementById('galleryGrid');
-            const resetBtn = document.getElementById('resetBtn');
-            const statusDisplay = document.getElementById('statusDisplay');
-            const mainStatus = document.getElementById('mainStatus');
-            const subStatus = document.getElementById('subStatus');
-            const finalControls = document.getElementById('finalControls');
-
-            // Configuração de Drag & Drop
-            dropZone.addEventListener('click', () => fileInput.click());
-            dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.borderColor = 'var(--accent)'; });
-            dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.style.borderColor = 'var(--border)'; });
-            dropZone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                dropZone.style.borderColor = 'var(--border)';
-                if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
-            });
-
-            fileInput.addEventListener('change', (e) => { 
-                if (e.target.files.length) handleFiles(e.target.files); 
-            });
-
-            // Função Principal de Controle do Lote
-            async function handleFiles(fileList) {
-                const files = Array.from(fileList);
-                if (files.length === 0) return;
-
-                // Transição de UI
-                dropZone.style.display = 'none';
-                workspace.style.display = 'flex';
-                loader.style.display = 'flex'; // Loader pequeno acima do status
-                galleryGrid.innerHTML = ''; // Limpa galeria anterior
-                finalControls.style.display = 'none';
-
-                let processedCount = 0;
-                const total = files.length;
-
-                // Loop de Processamento
-                for (let i = 0; i < total; i++) {
-                    const file = files[i];
-                    
-                    // Atualiza Frase de Status
-                    mainStatus.innerText = `Processando imagem ${i + 1} de ${total}`;
-                    subStatus.innerText = `Aplicando filtro Magic Light em: ${file.name}`;
-                    
-                    try {
-                        // Aguarda processamento individual (simula delay para não travar UI)
-                        await processSingleImage(file, i);
-                        processedCount++;
-                    } catch (err) {
-                        console.error("Erro ao processar imagem", err);
-                    }
-                }
-
-                // Finalização
-                loader.style.display = 'none';
-                mainStatus.innerText = "Processamento Concluído";
-                subStatus.innerText = `${processedCount} Obras de arte geradas com sucesso.`;
-                finalControls.style.display = 'flex';
-                // Efeito visual de sucesso
-                statusDisplay.style.borderColor = 'var(--accent)';
-                statusDisplay.style.boxShadow = '0 0 30px rgba(255, 0, 204, 0.2)';
-            }
-
-            // Processa uma única imagem e a adiciona ao grid
-            function processSingleImage(file, index) {
-                return new Promise((resolve) => {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const img = new Image();
-                        img.onload = () => {
-                            // Cria Canvas para processamento off-screen
-                            const canvas = document.createElement('canvas');
-                            const ctx = canvas.getContext('2d');
-                            
-                            // Redimensionamento inteligente (Max 1200px para performance em lote)
-                            const maxWidth = 1200; 
-                            let width = img.width;
-                            let height = img.height;
-
-                            if (width > maxWidth) {
-                                const ratio = maxWidth / width;
-                                width = maxWidth;
-                                height = height * ratio;
-                            }
-
-                            canvas.width = width;
-                            canvas.height = height;
-
-                            // Aplica o filtro Original Strauz Magic Light
-                            applyMagicFilter(ctx, img, width, height);
-
-                            // Cria elemento da galeria
-                            addCanvasToGallery(canvas, `magic_light_${index + 1}.png`);
-                            
-                            // Pequeno delay para a UI respirar e o usuário ler o status
-                            setTimeout(resolve, 500);
-                        };
-                        img.src = e.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                });
-            }
-
-            function addCanvasToGallery(canvas, filename) {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'gallery-item';
-
-                const overlay = document.createElement('div');
-                overlay.className = 'download-overlay';
-                
-                const btn = document.createElement('button');
-                btn.className = 'download-mini-btn';
-                btn.innerText = 'Baixar';
-                btn.onclick = () => {
-                    const link = document.createElement('a');
-                    link.download = filename;
-                    link.href = canvas.toDataURL('image/png', 0.9);
-                    link.click();
-                };
-
-                overlay.appendChild(btn);
-                itemDiv.appendChild(canvas);
-                itemDiv.appendChild(overlay);
-                galleryGrid.appendChild(itemDiv);
-            }
-
-            // Método Strauz Magic Light Intocado (Apenas ajustada a assinatura para receber img source)
-            function applyMagicFilter(ctx, sourceImage, w, h) {
-                // Base
-                ctx.drawImage(sourceImage, 0, 0, w, h);
-                
-                // Camada de Ajuste
-                ctx.globalCompositeOperation = 'source-over';
-                ctx.filter = 'saturate(140%) contrast(110%) brightness(105%)';
-                ctx.drawImage(sourceImage, 0, 0, w, h);
-                
-                // Camada de Glow/Bloom
-                ctx.filter = 'blur(8px)';
-                ctx.globalCompositeOperation = 'screen';
-                ctx.globalAlpha = 0.45;
-                ctx.drawImage(sourceImage, 0, 0, w, h);
-                
-                // Reset
-                ctx.filter = 'none';
-                ctx.globalAlpha = 1.0;
-                ctx.globalCompositeOperation = 'source-over';
-            }
-
-            resetBtn.addEventListener('click', () => {
-                workspace.style.display = 'none';
-                dropZone.style.display = 'flex';
-                fileInput.value = '';
-                statusDisplay.style.borderColor = 'var(--border)';
-                statusDisplay.style.boxShadow = 'none';
-            });
-        });
-    </script>
 </body>
 </html>
