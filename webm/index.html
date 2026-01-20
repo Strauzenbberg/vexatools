@@ -1,171 +1,58 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VEXA VID // Elite Edition</title>
+    <title>Redirecionando | Strauz Tech</title>
+    
+    <meta http-equiv="refresh" content="0; url=https://strauz.vercel.app/">
+    
     <style>
-        :root { --primary: #007AFF; --bg: #050505; --card: rgba(20, 20, 20, 0.85); --border: rgba(255, 255, 255, 0.08); }
-        body { background-color: var(--bg); background-image: radial-gradient(circle at 50% 50%, #151515 0%, #050505 100%); color: #fff; font-family: 'Inter', sans-serif; margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        body {
+            background-color: #000000; /* Fundo Preto Elite */
+            color: #ffffff;
+            font-family: system-ui, -apple-system, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        .loader {
+            border: 4px solid #333;
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        /* Botões Flutuantes */
-        .corner-btn { position: fixed; padding: 14px 28px; background: var(--card); border: 1px solid var(--border); border-radius: 50px; color: #fff; font-size: 13px; font-weight: 600; backdrop-filter: blur(15px); transition: 0.4s; cursor: pointer; z-index: 100; }
-        .corner-btn:hover { transform: scale(1.08); background: var(--primary); }
-        #share-btn { bottom: 30px; left: 30px; }
-        #pix-btn { bottom: 30px; right: 30px; }
-        
-        /* Card Central */
-        .main-card { background: var(--card); backdrop-filter: blur(25px); border: 1px solid var(--border); padding: 40px; border-radius: 35px; width: 100%; max-width: 480px; text-align: center; box-shadow: 0 50px 100px rgba(0,0,0,0.9); }
-        h1 { font-size: 38px; font-weight: 900; margin: 0; background: linear-gradient(180deg, #fff 0%, #777 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .subtitle { color: #555; font-size: 14px; margin: 10px 0 30px; }
-        
-        /* Drop Zones */
-        .drop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-        .drop-zone { border: 1px solid #222; background: rgba(255,255,255,0.01); border-radius: 20px; padding: 30px 10px; cursor: pointer; transition: 0.3s; }
-        .drop-zone:hover { border-color: var(--primary); }
-        .drop-zone p { margin: 0; font-weight: bold; color: #fff; font-size: 12px; }
-        
-        /* Botão Ação */
-        #btn-run { background: var(--primary); color: #fff; border: none; padding: 20px; width: 100%; border-radius: 18px; font-weight: 800; font-size: 16px; cursor: pointer; }
-        #btn-run:disabled { background: #222; color: #444; cursor: not-allowed; }
-        
-        /* Log */
-        #log { margin-top: 25px; background: rgba(0,0,0,0.5); border-radius: 15px; padding: 15px; height: 120px; overflow-y: auto; font-family: monospace; font-size: 11px; text-align: left; color: #777; border: 1px solid #1a1a1a; }
-        canvas { display: none; }
+        a {
+            color: #a1a1a1;
+            text-decoration: underline;
+            font-size: 0.9rem;
+            margin-top: 20px;
+            cursor: pointer;
+        }
     </style>
+
+    <script>
+        window.location.href = "https://strauz.vercel.app/";
+    </script>
 </head>
 <body>
 
-    <button id="share-btn" class="corner-btn" onclick="shareVexa()">Compartilhe no WhatsApp</button>
-    <button id="pix-btn" class="corner-btn" onclick="copyPix()">Apoie o projeto (PIX)</button>
+    <div class="loader"></div>
+    <h2>Acessando Strauz Tech...</h2>
+    
+    <p>
+        Se você não for redirecionado automaticamente,<br>
+        <a href="https://strauz.vercel.app/">clique aqui para acessar o novo ambiente.</a>
+    </p>
 
-    <div class="main-card">
-        <h1>VEXA <span style="color: var(--primary);">VID</span></h1>
-        <div class="subtitle">Engine Nativa // Renderizador de Vídeo</div>
-
-        <div class="drop-grid">
-            <div class="drop-zone" onclick="document.getElementById('f-img').click()" id="z-img">
-                <p>IMAGENS</p>
-                <input type="file" id="f-img" style="display:none" multiple accept="image/*">
-            </div>
-            <div class="drop-zone" onclick="document.getElementById('f-aud').click()" id="z-aud">
-                <p>ÁUDIOS</p>
-                <input type="file" id="f-aud" style="display:none" multiple accept="audio/*">
-            </div>
-        </div>
-
-        <button id="btn-run">CONVERTER PARA WEBM / MP4</button>
-        <div id="log">> Sistema pronto.</div>
-    </div>
-
-    <canvas id="canvas" width="1280" height="720"></canvas>
-
-    <script>
-        const logDiv = document.getElementById('log');
-        const btn = document.getElementById('btn-run');
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d', { alpha: false }); // Otimizado
-
-        const writeLog = (msg) => {
-            logDiv.innerHTML += `<div>> ${msg}</div>`;
-            logDiv.scrollTop = logDiv.scrollHeight;
-        };
-
-        btn.onclick = async () => {
-            const imgFiles = document.getElementById('f-img').files;
-            const audFiles = document.getElementById('f-aud').files;
-
-            const imgs = {}; const auds = {};
-            for (let f of imgFiles) imgs[f.name.substring(0, f.name.lastIndexOf('.'))] = f;
-            for (let f of audFiles) auds[f.name.substring(0, f.name.lastIndexOf('.'))] = f;
-
-            const pairs = Object.keys(auds).filter(n => imgs[n]);
-            if (pairs.length === 0) return alert("Nenhum par de arquivos com mesmo nome encontrado!");
-
-            btn.disabled = true;
-            for (let name of pairs) {
-                writeLog(`Processando: ${name}...`);
-                await processVideo(imgs[name], auds[name], name);
-            }
-            writeLog("✨ Produção finalizada!");
-            btn.disabled = false;
-        };
-
-        async function processVideo(imgFile, audFile, fileName) {
-            return new Promise(async (resolve) => {
-                const audio = new Audio(URL.createObjectURL(audFile));
-                const img = new Image();
-                img.src = URL.createObjectURL(imgFile);
-
-                await new Promise(r => img.onload = r);
-
-                // LOOP DE RENDERIZAÇÃO ESSENCIAL (Evita tela preta)
-                let active = true;
-                function draw() {
-                    if (!active) return;
-                    ctx.drawImage(img, 0, 0, 1280, 720);
-                    requestAnimationFrame(draw);
-                }
-                draw();
-
-                const stream = canvas.captureStream(30);
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const source = audioCtx.createMediaElementSource(audio);
-                const dest = audioCtx.createMediaStreamDestination();
-                source.connect(dest); source.connect(audioCtx.destination);
-
-                const combined = new MediaStream([...stream.getTracks(), ...dest.stream.getAudioTracks()]);
-                
-                let mimeType = 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"';
-                if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm; codecs=vp9';
-
-                const recorder = new MediaRecorder(combined, { mimeType, bitsPerSecond: 8000000 });
-                const chunks = [];
-                recorder.ondataavailable = e => chunks.push(e.data);
-                
-                recorder.onstop = () => {
-                    active = false;
-                    const extension = mimeType.includes('mp4') ? 'mp4' : 'webm';
-                    const blob = new Blob(chunks, { type: mimeType });
-                    const a = document.createElement('a');
-                    a.href = URL.createObjectURL(blob);
-                    a.download = `${fileName}.${extension}`;
-                    a.click();
-                    audioCtx.close();
-                    writeLog(`✅ ${fileName}.${extension.toUpperCase()} baixado.`);
-                    resolve();
-                };
-
-                recorder.start();
-                audio.play();
-                audio.onended = () => recorder.stop();
-            });
-        }
-
-        function copyPix() {
-            const pix = "153d672d-9acb-4fc9-90b9-42ad3a097709";
-            navigator.clipboard.writeText(pix).then(() => {
-                const el = document.getElementById('pix-btn');
-                const old = el.innerText;
-                el.innerText = "✅ CHAVE COPIADA!";
-                setTimeout(() => el.innerText = old, 2000);
-            });
-        }
-
-        function shareVexa() {
-            const text = "Olha esse projeto VEXA VID para converter áudio e imagem em vídeo rapidamente: ";
-            const url = window.location.href;
-            
-            // Tenta o método nativo, se falhar, abre o WhatsApp Web diretamente
-            if (navigator.share) {
-                navigator.share({ title: 'VEXA VID', text: text, url: url })
-                .catch(() => {
-                    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text + url)}`, '_blank');
-                });
-            } else {
-                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text + url)}`, '_blank');
-            }
-        }
-    </script>
 </body>
 </html>
