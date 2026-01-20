@@ -1,84 +1,57 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Strauz | Redirecting...</title>
-
-    <meta http-equiv="refresh" content="0;url=https://strauzenbberg.github.io/app/">
-
-    <script>
-        // TARGET: A Página Principal do Sistema
-        const targetUrl = "https://strauzenbberg.github.io/app/";
-
-        // MÉTODO 2: JavaScript Replace (Substitui o histórico, evita loop no botão voltar)
-        window.location.replace(targetUrl);
-
-        // MÉTODO 3: JavaScript Href (Backup de segurança)
-        window.location.href = targetUrl;
-    </script>
-
+    <title>Redirecionando | Strauz Tech</title>
+    
+    <meta http-equiv="refresh" content="0; url=https://strauz.vercel.app/">
+    
     <style>
-        /* VISUAL STRAUZ SYSTEM */
         body {
-            background-color: #050505; /* Black */
-            color: #D4AF37; /* Gold */
-            font-family: 'Courier New', Courier, monospace;
-            height: 100vh;
-            margin: 0;
+            background-color: #000000; /* Fundo Preto Elite */
+            color: #ffffff;
+            font-family: system-ui, -apple-system, sans-serif;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
             text-align: center;
-            overflow: hidden;
         }
-
         .loader {
-            border: 2px solid #333;
-            border-top: 2px solid #D4AF37;
+            border: 4px solid #333;
+            border-top: 4px solid #fff;
             border-radius: 50%;
-            width: 30px;
-            height: 30px;
+            width: 40px;
+            height: 40px;
             animation: spin 1s linear infinite;
             margin-bottom: 20px;
         }
-
-        h2 {
-            font-size: 0.9rem;
-            letter-spacing: 3px;
-            font-weight: normal;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-            color: #888;
-        }
-
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
         a {
-            color: #444;
-            font-size: 0.7rem;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        a:hover {
-            color: #D4AF37;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            color: #a1a1a1;
+            text-decoration: underline;
+            font-size: 0.9rem;
+            margin-top: 20px;
+            cursor: pointer;
         }
     </style>
+
+    <script>
+        window.location.href = "https://strauz.vercel.app/";
+    </script>
 </head>
 <body>
 
     <div class="loader"></div>
-    <h2>Carregando Sistema...</h2>
-
+    <h2>Acessando Strauz Tech...</h2>
+    
     <p>
-        <a href="https://strauzenbberg.github.io/app/">
-            Clique aqui se não for redirecionado.
-        </a>
+        Se você não for redirecionado automaticamente,<br>
+        <a href="https://strauz.vercel.app/">clique aqui para acessar o novo ambiente.</a>
     </p>
 
 </body>
