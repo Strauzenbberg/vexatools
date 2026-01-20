@@ -3,487 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vexa Safe | Metadata Wiper</title>
+    <title>Redirecionando | Strauz Tech</title>
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <meta http-equiv="refresh" content="0; url=https://strauz.vercel.app/">
     
-    <script src="https://cdn.jsdelivr.net/npm/exifr/dist/full.umd.js"></script>
-
     <style>
-        /* DESIGN SYSTEM - Cyber Security Theme */
-        :root {
-            --bg-color: #050505;
-            --surface-color: #111111;
-            --surface-border: #333333;
-            --primary-color: #00ff41; /* Hacker Green */
-            --danger-color: #ff3333;  /* Alert Red */
-            --warning-color: #ffcc00;
-            --text-main: #e0e0e0;
-            --text-muted: #888888;
-            --font-ui: 'Inter', sans-serif;
-            --font-code: 'JetBrains Mono', monospace;
-            --glass-bg: rgba(20, 20, 20, 0.7);
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: var(--font-ui);
-            min-height: 100vh;
+            background-color: #000000; /* Fundo Preto Elite */
+            color: #ffffff;
+            font-family: system-ui, -apple-system, sans-serif;
             display: flex;
             flex-direction: column;
-            overflow-x: hidden;
-        }
-
-        /* Grid Background Effect */
-        body::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            flex: 1;
-        }
-
-        header { text-align: center; margin-bottom: 40px; }
-        h1 { font-size: 2.5rem; font-weight: 700; letter-spacing: -1px; margin-bottom: 10px; }
-        h1 span { color: var(--primary-color); }
-        .subtitle { color: var(--text-muted); font-size: 1rem; }
-
-        /* UPLOAD ZONE */
-        .upload-area {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border: 2px dashed var(--surface-border);
-            border-radius: 16px;
-            padding: 60px 20px;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
             text-align: center;
-            transition: all 0.3s ease;
+        }
+        .loader {
+            border: 4px solid #333;
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        a {
+            color: #a1a1a1;
+            text-decoration: underline;
+            font-size: 0.9rem;
+            margin-top: 20px;
             cursor: pointer;
         }
-
-        .upload-area:hover, .upload-area.dragover {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 30px rgba(0, 255, 65, 0.1);
-        }
-
-        .upload-icon { font-size: 3rem; margin-bottom: 20px; }
-        .privacy-badge {
-            display: inline-flex; align-items: center; gap: 8px;
-            background: rgba(0, 255, 65, 0.1); color: var(--primary-color);
-            padding: 6px 12px; border-radius: 20px; font-size: 0.8rem;
-            font-weight: 600; margin-top: 20px; border: 1px solid rgba(0, 255, 65, 0.2);
-        }
-
-        /* ANALYSIS PANEL */
-        #analysis-panel {
-            display: none;
-            margin-top: 40px;
-            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 20px;
-        }
-
-        @media (max-width: 768px) { .dashboard-grid { grid-template-columns: 1fr; } }
-
-        /* Left Column */
-        .preview-card {
-            background: var(--surface-color);
-            border: 1px solid var(--surface-border);
-            border-radius: 12px;
-            padding: 10px;
-            height: fit-content;
-        }
-
-        .img-wrapper {
-            width: 100%; border-radius: 8px; overflow: hidden;
-            aspect-ratio: 1; background: #000; position: relative;
-        }
-
-        #preview-img { width: 100%; height: 100%; object-fit: contain; }
-
-        .file-info {
-            margin-top: 15px; padding: 10px;
-            background: rgba(255,255,255,0.05); border-radius: 6px;
-            font-family: var(--font-code); font-size: 0.8rem; color: var(--text-muted);
-        }
-
-        /* Right Column (Metadata) */
-        .data-card {
-            background: var(--surface-color);
-            border: 1px solid var(--surface-border);
-            border-radius: 12px;
-            padding: 25px;
-            display: flex; flex-direction: column;
-        }
-
-        .card-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 20px; border-bottom: 1px solid var(--surface-border);
-            padding-bottom: 15px;
-        }
-
-        .meta-list { list-style: none; font-family: var(--font-code); font-size: 0.9rem; margin-bottom: 20px; }
-        .meta-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 0; border-bottom: 1px solid #222;
-        }
-        .meta-item:last-child { border-bottom: none; }
-        
-        .meta-label { color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
-        .meta-value { color: var(--text-main); text-align: right; max-width: 60%; word-break: break-all; }
-        
-        .risk-high { color: var(--danger-color); font-weight: bold; }
-        .risk-med { color: var(--warning-color); }
-
-        /* BUTTONS */
-        .btn {
-            width: 100%; padding: 15px; border: none; border-radius: 8px;
-            font-family: var(--font-ui); font-weight: 600; font-size: 1rem;
-            cursor: pointer; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px;
-        }
-
-        .btn-clean {
-            background: var(--text-main); color: #000;
-        }
-        .btn-clean:hover { background: #fff; box-shadow: 0 0 20px rgba(255,255,255,0.3); }
-
-        .btn-download {
-            background: var(--primary-color); color: #000;
-            display: none; text-decoration: none; text-align: center;
-        }
-        .btn-download:hover { box-shadow: 0 0 20px rgba(0, 255, 65, 0.4); }
-
-        /* Status Badges */
-        .status-badge {
-            margin-top: 10px; padding: 10px; border-radius: 6px;
-            font-weight: 700; text-align: center; font-size: 0.85rem; text-transform: uppercase;
-        }
-        .badge-danger { background: rgba(255, 51, 51, 0.15); color: var(--danger-color); border: 1px solid var(--danger-color); }
-        .badge-safe { background: rgba(0, 255, 65, 0.15); color: var(--primary-color); border: 1px solid var(--primary-color); }
-
-        input[type="file"] { display: none; }
     </style>
+
+    <script>
+        window.location.href = "https://strauz.vercel.app/";
+    </script>
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <h1>VEXA <span>SAFE</span></h1>
-            <p class="subtitle">Auditoria de Metadados & Limpeza Segura</p>
-        </header>
+    <div class="loader"></div>
+    <h2>Acessando Strauz Tech...</h2>
+    
+    <p>
+        Se você não for redirecionado automaticamente,<br>
+        <a href="https://strauz.vercel.app/">clique aqui para acessar o novo ambiente.</a>
+    </p>
 
-        <div class="upload-area" id="drop-zone">
-            <input type="file" id="file-input" accept="image/png, image/jpeg, image/webp">
-            <div class="upload-icon">📂</div>
-            <div class="upload-text">Selecione ou Arraste uma Foto</div>
-            <div class="privacy-badge">🔒 Processamento 100% Local (Offline)</div>
-        </div>
-
-        <div id="analysis-panel">
-            <div class="dashboard-grid">
-                
-                <div class="preview-card">
-                    <div class="img-wrapper">
-                        <img id="preview-img" src="" alt="Preview">
-                    </div>
-                    
-                    <div class="file-info">
-                        <div>NOME: <span id="file-name">-</span></div>
-                        <div>TAMANHO: <span id="file-size">-</span></div>
-                        <div>TIPO: <span id="file-type">-</span></div>
-                    </div>
-
-                    <div id="scan-status" class="status-badge">
-                        AGUARDANDO AÇÃO
-                    </div>
-                </div>
-
-                <div class="data-card">
-                    <div class="card-header">
-                        <span class="card-title">Resultado da Auditoria</span>
-                        <span style="font-size: 0.8rem; color: var(--text-muted)">METADATA SCAN</span>
-                    </div>
-
-                    <ul class="meta-list" id="meta-list">
-                        </ul>
-
-                    <div style="margin-top: auto;">
-                        <button id="btn-clean" class="btn btn-clean">
-                            🗑️ Limpar Metadados Agora
-                        </button>
-                        
-                        <a id="btn-download" class="btn btn-download">
-                            ✅ Baixar Imagem Segura
-                        </a>
-                        
-                        <div id="clean-stats" style="text-align: center; margin-top: 10px; font-size: 0.8rem; color: var(--primary-color); opacity: 0;">
-                            Redução de lixo digital confirmada.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // --- ELEMENTOS ---
-        const dropZone = document.getElementById('drop-zone');
-        const fileInput = document.getElementById('file-input');
-        const analysisPanel = document.getElementById('analysis-panel');
-        const previewImg = document.getElementById('preview-img');
-        
-        // Displays de Informação
-        const fileNameDisp = document.getElementById('file-name');
-        const fileSizeDisp = document.getElementById('file-size');
-        const fileTypeDisp = document.getElementById('file-type');
-        const metaList = document.getElementById('meta-list');
-        const scanStatus = document.getElementById('scan-status');
-        
-        // Controles
-        const btnClean = document.getElementById('btn-clean');
-        const btnDownload = document.getElementById('btn-download');
-        const cleanStats = document.getElementById('clean-stats');
-
-        let currentFile = null;
-
-        // --- UPLOAD HANDLERS ---
-        dropZone.addEventListener('click', () => fileInput.click());
-        
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.classList.add('dragover');
-        });
-        
-        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-        
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('dragover');
-            if(e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
-        });
-
-        fileInput.addEventListener('change', (e) => {
-            if(e.target.files.length) handleFile(e.target.files[0]);
-        });
-
-        // --- LÓGICA PRINCIPAL ---
-
-        function formatBytes(bytes, decimals = 2) {
-            if (!+bytes) return '0 Bytes';
-            const k = 1024;
-            const dm = decimals < 0 ? 0 : decimals;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
-        }
-
-        function handleFile(file) {
-            if (!file.type.startsWith('image/')) {
-                alert('Apenas imagens são permitidas.');
-                return;
-            }
-            
-            currentFile = file;
-            
-            // Resetar UI
-            analysisPanel.style.display = 'block';
-            btnClean.style.display = 'block';
-            btnClean.disabled = false;
-            btnClean.innerText = "🗑️ Limpar Metadados Agora";
-            btnDownload.style.display = 'none';
-            cleanStats.style.opacity = '0';
-            
-            // Preencher Info Básica
-            fileNameDisp.innerText = file.name.length > 20 ? file.name.substring(0, 20) + '...' : file.name;
-            fileSizeDisp.innerText = formatBytes(file.size);
-            fileTypeDisp.innerText = file.type.split('/')[1].toUpperCase();
-            
-            // Carregar Preview
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                previewImg.src = e.target.result;
-                // Iniciar Scan Real
-                auditMetadata(file);
-            };
-            reader.readAsDataURL(file);
-        }
-
-        async function auditMetadata(file) {
-            metaList.innerHTML = '<li class="meta-item"><span>🔍 Analisando camadas ocultas...</span></li>';
-            scanStatus.className = 'status-badge';
-            scanStatus.innerText = 'PROCESSANDO...';
-
-            try {
-                // EXIFR: Busca metadados (TIFF, XMP, GPS, etc)
-                const data = await exifr.parse(file, {
-                    tiff: true,
-                    xmp: true,
-                    icc: true,
-                    jfif: true,
-                    gps: true,
-                    mergeOutput: true
-                });
-
-                renderAuditResults(data);
-            } catch (err) {
-                console.warn(err);
-                metaList.innerHTML = '<li class="meta-item"><span>⚠️ Erro na leitura ou formato sem suporte.</span></li>';
-            }
-        }
-
-        function renderAuditResults(data) {
-            metaList.innerHTML = ''; // Limpa lista
-            let riskCount = 0;
-
-            if (!data || Object.keys(data).length === 0) {
-                // Caso Seguro
-                scanStatus.className = 'status-badge badge-safe';
-                scanStatus.innerText = '✅ NENHUM DADO OCULTO';
-                metaList.innerHTML = `
-                    <li class="meta-item" style="justify-content: center; color: var(--primary-color);">
-                        Arquivo parece limpo.
-                    </li>`;
-                btnClean.innerText = "Recriar Arquivo (Preventivo)";
-                return;
-            }
-
-            // --- Helper de Linha ---
-            const addLine = (icon, label, value, riskClass = '') => {
-                const li = document.createElement('li');
-                li.className = 'meta-item';
-                li.innerHTML = `
-                    <span class="meta-label">${icon} ${label}</span>
-                    <span class="meta-value ${riskClass}">${value}</span>
-                `;
-                metaList.appendChild(li);
-            };
-
-            // 1. GPS (Risco Crítico)
-            if (data.latitude && data.longitude) {
-                riskCount++;
-                const mapsUrl = `https://www.google.com/maps?q=${data.latitude},${data.longitude}`;
-                addLine('📍', 'LOCALIZAÇÃO GPS', 
-                    `${data.latitude.toFixed(4)}, ${data.longitude.toFixed(4)} <a href="${mapsUrl}" target="_blank" style="color:var(--primary-color)">[Ver]</a>`, 
-                    'risk-high'
-                );
-            }
-
-            // 2. Data Original
-            if (data.DateTimeOriginal || data.CreateDate) {
-                const dt = new Date(data.DateTimeOriginal || data.CreateDate);
-                addLine('📅', 'Data Criação', dt.toLocaleString(), 'risk-med');
-            }
-
-            // 3. Dispositivo
-            if (data.Make || data.Model) {
-                addLine('📷', 'Câmera', `${data.Make || ''} ${data.Model || ''}`, 'risk-med');
-            }
-
-            // 4. Software
-            if (data.Software || data.ApplicationRecordVersion) {
-                addLine('💾', 'Software', data.Software || 'Desconhecido');
-            }
-
-            // 5. Autor
-            if (data.Artist || data.Copyright) {
-                addLine('👤', 'Autor', data.Artist || data.Copyright, 'risk-med');
-            }
-
-            // Feedback Visual Final
-            if (riskCount > 0) {
-                scanStatus.className = 'status-badge badge-danger';
-                scanStatus.innerText = `⚠️ ${riskCount} RISCOS ENCONTRADOS`;
-            } else {
-                scanStatus.className = 'status-badge badge-danger';
-                scanStatus.innerText = '⚠️ METADADOS TÉCNICOS';
-                // Adiciona item genérico se só achou coisas técnicas
-                if(metaList.children.length === 0) {
-                   addLine('⚙️', 'Dados Técnicos', 'EXIF/XMP Presentes'); 
-                }
-            }
-        }
-
-        // --- LIMPEZA (Sanitization) ---
-        btnClean.addEventListener('click', () => {
-            if (!previewImg.src) return;
-
-            btnClean.disabled = true;
-            btnClean.innerText = "🧼 Higienizando Pixels...";
-
-            // O Truque do Canvas:
-            // Ao desenhar a imagem num Canvas e exportar, o browser cria um NOVO arquivo
-            // contendo apenas os dados visuais (pixels). Todo o lixo (EXIF) é abandonado.
-            
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const img = new Image();
-            
-            img.src = previewImg.src;
-            
-            img.onload = () => {
-                canvas.width = img.width;
-                canvas.height = img.height;
-                ctx.drawImage(img, 0, 0);
-
-                // Exportar como novo JPG (qualidade 0.95 para manter fidelidade visual)
-                canvas.toBlob((blob) => {
-                    const url = URL.createObjectURL(blob);
-                    
-                    // Atualizar UI para Sucesso
-                    btnClean.style.display = 'none';
-                    btnDownload.style.display = 'block';
-                    btnDownload.href = url;
-                    
-                    // Nome do arquivo seguro
-                    const safeName = `VexaSafe_${currentFile.name.split('.')[0]}.jpg`;
-                    btnDownload.download = safeName;
-                    
-                    // Mostrar comparação de tamanho (Prova de limpeza)
-                    const saved = currentFile.size - blob.size;
-                    const savedText = saved > 0 
-                        ? `Lixo removido: ${formatBytes(saved)}` 
-                        : `Arquivo re-codificado com segurança.`;
-                    
-                    cleanStats.innerText = `Tamanho Final: ${formatBytes(blob.size)} (${savedText})`;
-                    cleanStats.style.opacity = '1';
-
-                    scanStatus.className = 'status-badge badge-safe';
-                    scanStatus.innerText = '🛡️ ARQUIVO HIGIENIZADO';
-                    metaList.innerHTML = `
-                        <li class="meta-item" style="display:block; text-align:center; padding: 20px 0;">
-                            <div style="font-size: 2rem; margin-bottom:10px;">✨</div>
-                            <div style="color: #fff">Metadados Destruídos</div>
-                            <div style="font-size: 0.8rem; color: #666">Cópia visualmente idêntica, mas digitalmente limpa.</div>
-                        </li>
-                    `;
-
-                }, 'image/jpeg', 0.95);
-            };
-        });
-    </script>
 </body>
 </html>
